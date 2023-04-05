@@ -17,5 +17,9 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false
+  },
+  // Set alias for import
+  "paths": {
+    "@libraries/*": ["./libraries/*"]
   }
 }
