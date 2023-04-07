@@ -3,12 +3,15 @@ import { Entity, Column, BeforeInsert, ManyToOne, JoinColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as dotenv from 'dotenv';
 import * as bcrypt from 'bcrypt';
-import { Roles } from '../../roles/entities/roles.entity';
+import { RoleEntity } from '../../roles/entities/roles.entity';
 
 dotenv.config();
 
 @Entity({ name: 'users' })
-export class Users extends AppEntity {
+export class UserEntity extends AppEntity {
+  @Column({ nullable: true })
+  public role_id: string;
+
   @Column()
   public name: string;
 
@@ -45,14 +48,18 @@ export class Users extends AppEntity {
   @BeforeInsert()
   public async hashPasswordOnCreate() {
     if (this.password) {
-      // console.log(
-      //   'process.env.APP_BCRYPT_SALT_OR_ROUND',
-      //   process.env.APP_BCRYPT_SALT_OR_ROUND,
-      // );
-      // console.log(this.password, 'pass')
-      // const saltOrRounds = process.env.APP_BCRYPT_SALT_OR_ROUND;
-      const hash = await bcrypt.hash(this.password, 11);
+      const hash = await bcrypt.hash(
+        this.password,
+        +process.env.APP_BCRYPT_SALT_OR_ROUND,
+      );
       this.password = hash;
     }
   }
+
+  /**
+   * Relations
+   */
+  @ManyToOne(() => RoleEntity, (role) => role.id)
+  @JoinColumn({ name: 'role_id' })
+  public role: RoleEntity;
 }

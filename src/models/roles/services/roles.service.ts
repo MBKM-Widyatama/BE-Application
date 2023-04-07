@@ -1,31 +1,31 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Roles } from '../entities/roles.entity';
+import { RoleEntity } from '../entities/roles.entity';
 import { CreateRoleDto } from 'src/services/master-roles/dto/create-role.dto';
 
 @Injectable()
 export class RolesService {
   constructor(
-    @InjectRepository(Roles)
-    private readonly RolesRepository: Repository<Roles>,
+    @InjectRepository(RoleEntity)
+    private readonly RolesRepository: Repository<RoleEntity>,
   ) {}
 
   /**
    * @description Handle find all roles
    *
-   * @returns {Promise<Roles[]>}
+   * @returns {Promise<RoleEntity[]>}
    */
-  findAllRoles(): Promise<Roles[]> {
+  findAllRoles(): Promise<RoleEntity[]> {
     return this.RolesRepository.find();
   }
 
   /**
    * @description Handle find role by name
    * @param {string} name
-   * @returns {Promise<Roles>}
+   * @returns {Promise<RoleEntity>}
    */
-  findRoleByName(name: string): Promise<Roles> {
+  findRoleByName(name: string): Promise<RoleEntity> {
     return this.RolesRepository.findOne({ where: { name } });
   }
 
@@ -33,9 +33,9 @@ export class RolesService {
    * @description Handle create role
    * @param {Object} payload
    *
-   * @returns {Promise<Roles>}
+   * @returns {Promise<RoleEntity>}
    */
-  createRole(payload: CreateRoleDto): Promise<Roles> {
+  createRole(payload: CreateRoleDto): Promise<RoleEntity> {
     const role = this.RolesRepository.create(payload);
 
     return this.RolesRepository.save(role);
