@@ -1,5 +1,5 @@
 export interface ICreateUser {
-  roleId: string;
+  role_id: string;
   name: string;
   email: string;
   password: string;

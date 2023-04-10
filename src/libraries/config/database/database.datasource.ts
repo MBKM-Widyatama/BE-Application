@@ -5,11 +5,6 @@ import path = require('path');
 /**
  * https://github.com/typeorm/typeorm/blob/master/docs/migrations.md
  */
-console.log(
-  path.join(__dirname, '../../../../src/libraries/database/migrations'),
-  'DatabaseConfig',
-);
-
 export const AppDataSource = new DataSource({
   ...DatabaseConfig,
   type: 'postgres',

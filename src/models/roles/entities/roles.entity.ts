@@ -2,7 +2,7 @@ import { AppEntity } from '../../../libraries/common/entities/app-entity.abstrac
 import { Entity, Column } from 'typeorm';
 
 @Entity({ name: 'roles' })
-export class Roles extends AppEntity {
+export class RoleEntity extends AppEntity {
   @Column()
   name: string;
 
