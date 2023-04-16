@@ -87,8 +87,18 @@ export class UsersService {
    * @returns {Promise<UserEntity>}
    */
   createUser(payload: ICreateUser): Promise<UserEntity> {
-    const user = this.UsersRepository.create(payload);
+    try {
+      const user = this.UsersRepository.create(payload);
 
-    return this.UsersRepository.save(user);
+      return this.UsersRepository.save(user);
+    } catch (error) {
+      console.log(error.code, 'code');
+      if (error.code === '23505') {
+        throw new BadRequestException('Bad Request', {
+          cause: new Error(),
+          description: 'Email already exists',
+        });
+      }
+    }
   }
 }

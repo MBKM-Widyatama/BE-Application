@@ -6,11 +6,11 @@ import {
   Body,
   HttpCode,
   UseGuards,
+  UsePipes,
 } from '@nestjs/common';
 
 // Dtos
 import { CreateUserDto } from '../dto/create-user.dto';
-// import { SignInUserDto } from '../dto/signin-user.dto';
 
 // Services
 import { UsersService } from 'src/models/users/services/users.service';
@@ -21,6 +21,8 @@ import { Throttle } from '@nestjs/throttler';
 
 // Passport
 import { AuthPublicLocalGuard } from 'src/libraries/common';
+
+// Sanitize
 @Controller('authentication')
 export class AuthenticationController {
   constructor(

@@ -1,5 +1,5 @@
 // NestJS imports
-import { NestFactory, Reflector } from '@nestjs/core';
+import { HttpAdapterHost, NestFactory, Reflector } from '@nestjs/core';
 import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
@@ -9,6 +9,9 @@ import helmet from 'helmet';
 
 // Interceptors imports
 import { CustomBaseResponseInterceptor } from './libraries/common/interceptors';
+
+// Exceptions imports
+import { ExistsRecordFilter } from './libraries/config/exceptions';
 
 // Third-party imports
 import * as compression from 'compression';
@@ -55,11 +58,18 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
   app.useGlobalInterceptors(new CustomBaseResponseInterceptor());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+  const { httpAdapter } = app.get(HttpAdapterHost);
+  app.useGlobalFilters(new ExistsRecordFilter(httpAdapter));
 
   /**
    * Set Firebase
    */
   setupFirebase(app, config);
+
+  /**
+   * Protect XSS Attacks
+   * https://docs.nestjs.com/techniques/security
+   */
 
   await app.listen(1337, () => {
     console.log(`[BACKEND SERVICE ${env}]`, `//${host}:${port}`);
