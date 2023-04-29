@@ -6,11 +6,11 @@ import {
   TableForeignKey,
 } from 'typeorm';
 
-export class permissions1680532727974 implements MigrationInterface {
+export class testimonials1682680311354 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     queryRunner.createTable(
       new Table({
-        name: 'permissions',
+        name: 'testimonials',
         columns: [
           {
             name: 'id',
@@ -20,8 +20,13 @@ export class permissions1680532727974 implements MigrationInterface {
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'name',
-            type: 'varchar',
+            name: 'rating',
+            type: 'int',
+            isNullable: false,
+          },
+          {
+            name: 'content',
+            type: 'text',
             isNullable: false,
           },
           {
@@ -47,32 +52,33 @@ export class permissions1680532727974 implements MigrationInterface {
     );
 
     await queryRunner.addColumn(
-      'permissions',
+      'testimonials',
       new TableColumn({
-        name: 'permission_group_id',
+        name: 'user_id',
         type: 'uuid',
         isNullable: false,
       }),
     );
 
     await queryRunner.createForeignKey(
-      'permissions',
+      'testimonials',
       new TableForeignKey({
-        columnNames: ['permission_group_id'],
+        columnNames: ['user_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'permission_groups',
+        referencedTableName: 'users',
+        onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable('permissions');
+    const table = await queryRunner.getTable('testimonials');
     const foreignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('permission_group_id') !== -1,
+      (fk) => fk.columnNames.indexOf('user_id') !== -1,
     );
-    await queryRunner.dropForeignKey('permissions', foreignKey);
-    await queryRunner.dropColumn('permissions', 'permission_group_id');
-    await queryRunner.dropTable('permissions');
+    await queryRunner.dropForeignKey('testimonials', foreignKey);
+    await queryRunner.dropColumn('testimonials', 'user_id');
+    await queryRunner.dropTable('testimonials');
   }
 }

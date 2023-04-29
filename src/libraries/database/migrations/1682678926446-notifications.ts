@@ -6,11 +6,11 @@ import {
   TableForeignKey,
 } from 'typeorm';
 
-export class permissions1680532727974 implements MigrationInterface {
+export class notifications1682678926446 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     queryRunner.createTable(
       new Table({
-        name: 'permissions',
+        name: 'notifications',
         columns: [
           {
             name: 'id',
@@ -20,9 +20,20 @@ export class permissions1680532727974 implements MigrationInterface {
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'name',
+            name: 'type',
             type: 'varchar',
             isNullable: false,
+          },
+          {
+            name: 'content',
+            type: 'text',
+            isNullable: false,
+          },
+          {
+            name: 'read',
+            type: 'boolean',
+            isNullable: false,
+            default: false,
           },
           {
             name: 'created_at',
@@ -47,32 +58,33 @@ export class permissions1680532727974 implements MigrationInterface {
     );
 
     await queryRunner.addColumn(
-      'permissions',
+      'notifications',
       new TableColumn({
-        name: 'permission_group_id',
+        name: 'user_id',
         type: 'uuid',
         isNullable: false,
       }),
     );
 
     await queryRunner.createForeignKey(
-      'permissions',
+      'notifications',
       new TableForeignKey({
-        columnNames: ['permission_group_id'],
+        columnNames: ['user_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'permission_groups',
+        referencedTableName: 'users',
+        onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       }),
     );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable('permissions');
+    const table = await queryRunner.getTable('notification');
     const foreignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('permission_group_id') !== -1,
+      (fk) => fk.columnNames.indexOf('user_id') !== -1,
     );
-    await queryRunner.dropForeignKey('permissions', foreignKey);
-    await queryRunner.dropColumn('permissions', 'permission_group_id');
-    await queryRunner.dropTable('permissions');
+    await queryRunner.dropForeignKey('notification', foreignKey);
+    await queryRunner.dropColumn('notification', 'user_id');
+    await queryRunner.dropTable('notification');
   }
 }
