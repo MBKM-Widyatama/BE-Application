@@ -62,7 +62,10 @@ async function bootstrap() {
   setupFirebase(app, config);
 
   await app.listen(1337, () => {
-    console.log(`[BACKEND SERVICE ${env}]`, `//${host}:${port}`);
+    console.log(
+      `[BACKEND SERVICE ${env}]`,
+      `Server running at http://${host}:${port}`,
+    );
   });
 }
 bootstrap();

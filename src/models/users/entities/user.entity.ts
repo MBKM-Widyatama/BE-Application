@@ -1,9 +1,17 @@
-import { AppEntity } from '../../../libraries/common/entities/app-entity.abstract';
-import { Entity, Column, BeforeInsert, ManyToOne, JoinColumn } from 'typeorm';
+import { AppEntity } from '../../../libraries/common/entities';
+import {
+  Entity,
+  Column,
+  BeforeInsert,
+  OneToOne,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as dotenv from 'dotenv';
 import * as bcrypt from 'bcrypt';
 import { RoleEntity } from '../../roles/entities/roles.entity';
+import { FacultiesEntity } from 'src/models/faculties/entities/faculties.entity';
 
 dotenv.config();
 
@@ -11,6 +19,9 @@ dotenv.config();
 export class UserEntity extends AppEntity {
   @Column({ nullable: true })
   public role_id: string;
+
+  @Column()
+  public faculty_id: string;
 
   @Column()
   public name: string;
@@ -62,4 +73,8 @@ export class UserEntity extends AppEntity {
   @ManyToOne(() => RoleEntity, (role) => role.id)
   @JoinColumn({ name: 'role_id' })
   public role: RoleEntity;
+
+  @OneToOne(() => FacultiesEntity, (faculty) => faculty.id)
+  @JoinColumn({ name: 'faculty_id' })
+  public faculty: FacultiesEntity;
 }

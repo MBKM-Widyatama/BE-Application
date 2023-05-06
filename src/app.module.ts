@@ -6,6 +6,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseService } from 'src/libraries/config/database/database.service';
+import { FacultiesModule } from './models/faculties/faculties.module';
+import { LecturersModule } from './models/lecturers/lecturers.module';
+import { MasterFacultiesModule } from './services/master-faculties/master-faculties.module';
 
 @Module({
   imports: [
@@ -25,6 +28,9 @@ import { DatabaseService } from 'src/libraries/config/database/database.service'
     }),
     AuthenticationModule,
     MasterRolesModule,
+    FacultiesModule,
+    LecturersModule,
+    MasterFacultiesModule,
   ],
   providers: [
     {
