@@ -90,41 +90,24 @@ export class users1680531935140 implements MigrationInterface {
           },
           {
             name: 'created_at',
-            type: 'timestamp',
-            default: 'now()',
+            type: 'bigint',
+            isNullable: false,
+            default: Math.floor(Date.now() / 1000),
           },
           {
             name: 'updated_at',
-            type: 'timestamp',
-            default: 'now()',
+            type: 'bigint',
+            isNullable: false,
+            default: Math.floor(Date.now() / 1000),
           },
           {
             name: 'deleted_at',
-            type: 'timestamp',
+            type: 'bigint',
             isNullable: true,
           },
         ],
       }),
       true,
-    );
-
-    await queryRunner.addColumn(
-      'users',
-      new TableColumn({
-        name: 'role_id',
-        type: 'uuid',
-        isNullable: false,
-      }),
-    );
-
-    await queryRunner.createForeignKey(
-      'users',
-      new TableForeignKey({
-        columnNames: ['role_id'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'roles',
-        onDelete: 'CASCADE',
-      }),
     );
   }
 

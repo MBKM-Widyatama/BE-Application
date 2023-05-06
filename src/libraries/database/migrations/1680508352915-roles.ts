@@ -24,20 +24,22 @@ export class roles1680508352915 implements MigrationInterface {
             default: true,
           },
           {
-            name: 'created_at',
-            type: 'timestamp',
-            default: 'now()',
-          },
-          {
-            name: 'updated_at',
-            type: 'timestamp',
-            default: 'now()',
-          },
-          {
-            name: 'deleted_at',
-            type: 'timestamp',
-            isNullable: true,
-          },
+						name: 'created_at',
+						type: 'bigint',
+						isNullable: false,
+            default: Math.floor(Date.now() / 1000)
+					},
+					{
+						name: 'updated_at',
+						type: 'bigint',
+						isNullable: false,
+            default: Math.floor(Date.now() / 1000)
+					},
+					{
+						name: 'deleted_at',
+						type: 'bigint',
+						isNullable: true,
+					},
         ],
       }),
       true,

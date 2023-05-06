@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class permissionGroups1680532593330 implements MigrationInterface {
+export class faculty1682378601754 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     queryRunner.createTable(
       new Table({
-        name: 'permission_groups',
+        name: 'faculties',
         columns: [
           {
             name: 'id',
@@ -19,22 +19,22 @@ export class permissionGroups1680532593330 implements MigrationInterface {
             isNullable: false,
           },
           {
-						name: 'created_at',
-						type: 'bigint',
-						isNullable: false,
-            default: Math.floor(Date.now() / 1000)
-					},
-					{
-						name: 'updated_at',
-						type: 'bigint',
-						isNullable: false,
-            default: Math.floor(Date.now() / 1000)
-					},
-					{
-						name: 'deleted_at',
-						type: 'bigint',
-						isNullable: true,
-					},
+            name: 'created_at',
+            type: 'bigint',
+            isNullable: false,
+            default: Math.floor(Date.now() / 1000),
+          },
+          {
+            name: 'updated_at',
+            type: 'bigint',
+            isNullable: false,
+            default: Math.floor(Date.now() / 1000),
+          },
+          {
+            name: 'deleted_at',
+            type: 'bigint',
+            isNullable: true,
+          },
         ],
       }),
       true,
@@ -42,6 +42,6 @@ export class permissionGroups1680532593330 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('permission_groups');
+    await queryRunner.dropTable('faculties');
   }
 }

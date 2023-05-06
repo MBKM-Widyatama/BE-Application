@@ -20,20 +20,22 @@ export class rolePermissions1680533210652 implements MigrationInterface {
             default: 'uuid_generate_v4()',
           },
           {
-            name: 'created_at',
-            type: 'timestamp',
-            default: 'now()',
-          },
-          {
-            name: 'updated_at',
-            type: 'timestamp',
-            default: 'now()',
-          },
-          {
-            name: 'deleted_at',
-            type: 'timestamp',
-            isNullable: true,
-          },
+						name: 'created_at',
+						type: 'bigint',
+						isNullable: false,
+            default: Math.floor(Date.now() / 1000)
+					},
+					{
+						name: 'updated_at',
+						type: 'bigint',
+						isNullable: false,
+            default: Math.floor(Date.now() / 1000)
+					},
+					{
+						name: 'deleted_at',
+						type: 'bigint',
+						isNullable: true,
+					},
         ],
       }),
       true,
