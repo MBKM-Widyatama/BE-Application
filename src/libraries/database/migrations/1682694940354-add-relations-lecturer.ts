@@ -11,13 +11,13 @@ export class addRelationsLecturer1682694940354 implements MigrationInterface {
       new TableColumn({
         name: 'course_id',
         type: 'uuid',
-        isNullable: false,
+        isNullable: true,
       }),
 
       new TableColumn({
         name: 'faculty_id',
         type: 'uuid',
-        isNullable: false,
+        isNullable: true,
       }),
     ]);
 
