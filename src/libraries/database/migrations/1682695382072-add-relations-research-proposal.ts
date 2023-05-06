@@ -47,7 +47,7 @@ export class addRelationsResearchProposal1682695382072
       new TableForeignKey({
         columnNames: ['leader_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'lecturer',
+        referencedTableName: 'users',
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       }),

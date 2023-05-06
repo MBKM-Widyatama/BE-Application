@@ -59,7 +59,7 @@ export class participants1682687407074 implements MigrationInterface {
       new TableForeignKey({
         columnNames: ['member_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'lecturer',
+        referencedTableName: 'users',
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       }),

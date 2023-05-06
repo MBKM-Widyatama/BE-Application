@@ -21,7 +21,7 @@ export class addRelationsFaculties1682695261425 implements MigrationInterface {
       new TableForeignKey({
         columnNames: ['leader_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'lecturer',
+        referencedTableName: 'users',
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       }),
