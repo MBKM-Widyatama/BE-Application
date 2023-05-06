@@ -1,4 +1,4 @@
-import { AppEntity } from '../../../libraries/common/entities/app-entity.abstract';
+import { AppEntity } from '../../../libraries/common/entities';
 import {
   Entity,
   Column,

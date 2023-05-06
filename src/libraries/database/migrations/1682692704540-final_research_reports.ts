@@ -147,7 +147,7 @@ export class finalResearchReports1682692704540 implements MigrationInterface {
       new TableForeignKey({
         columnNames: ['leader_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'lecturer',
+        referencedTableName: 'users',
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       }),

@@ -12,7 +12,7 @@ export class DatabaseService implements TypeOrmOptionsFactory {
       ...DatabaseConfig,
       type: 'postgres',
       autoLoadEntities: true,
-      synchronize: this.configService.get('APP_MODE') === 'development',
+      // synchronize: this.configService.get('APP_MODE') === 'development',
     };
 
     return { ...config };

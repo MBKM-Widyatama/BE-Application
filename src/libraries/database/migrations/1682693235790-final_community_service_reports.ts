@@ -154,7 +154,7 @@ export class finalCommunityServiceReports1682693235790
       new TableForeignKey({
         columnNames: ['leader_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'lecturer',
+        referencedTableName: 'users',
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       }),

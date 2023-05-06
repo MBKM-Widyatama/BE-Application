@@ -1,4 +1,4 @@
-import { AppEntity } from 'src/libraries/common';
+import { AppEntity } from '../../../libraries/common/entities';
 import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
 import { FacultiesEntity } from 'src/models/faculties/entities/faculties.entity';
 

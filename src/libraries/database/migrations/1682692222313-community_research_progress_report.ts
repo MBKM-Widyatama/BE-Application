@@ -128,7 +128,7 @@ export class communityResearchProgressReport1682692222313
       new TableForeignKey({
         columnNames: ['leader_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'lecturer',
+        referencedTableName: 'users',
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
       }),
