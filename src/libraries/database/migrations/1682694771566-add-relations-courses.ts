@@ -12,7 +12,7 @@ export class addRelationsCourses1682694771566 implements MigrationInterface {
       new TableColumn({
         name: 'leader_id',
         type: 'uuid',
-        isNullable: false,
+        isNullable: true,
       }),
     );
 
