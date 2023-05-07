@@ -49,12 +49,12 @@ export class AuthenticationController {
   @Post('sign-up')
   @HttpCode(201)
   @Throttle(3, 60)
-  async signUp(@Body() body: CreateUserDto) {
+  async signUp(@Body() requestBody: CreateUserDto) {
     const defaultRole = await this.RolesService.findRoleByName('Super Admin');
 
     const payload = {
-      ...body,
-      role_id: defaultRole.id,
+      ...requestBody,
+      role_id: requestBody.role_id ?? defaultRole.id,
     };
     const result = await this.UsersService.createUser(payload);
 

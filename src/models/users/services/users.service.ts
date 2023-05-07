@@ -27,6 +27,7 @@ export class UsersService {
       id: user.id,
       email: user.email,
       name: user.name,
+      role: user.role,
     };
 
     return this.jwtService.sign(payload);
@@ -60,7 +61,10 @@ export class UsersService {
    * @returns {Promise<any>}
    */
   async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.UsersRepository.findOne({ where: { email } });
+    const user = await this.UsersRepository.findOne({
+      where: { email },
+      relations: ['role'],
+    });
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (user && isMatch) {
