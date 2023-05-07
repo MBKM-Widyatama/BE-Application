@@ -1,12 +1,5 @@
 import { AppEntity } from '../../../libraries/common/entities';
-import {
-  Entity,
-  Column,
-  BeforeInsert,
-  OneToOne,
-  ManyToOne,
-  JoinColumn,
-} from 'typeorm';
+import { Entity, Column, BeforeInsert, OneToOne, JoinColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as dotenv from 'dotenv';
 import * as bcrypt from 'bcrypt';
@@ -18,6 +11,7 @@ dotenv.config();
 @Entity({ name: 'users' })
 export class UserEntity extends AppEntity {
   @Column({ nullable: true })
+  @Exclude()
   public role_id: string;
 
   @Column()
@@ -70,7 +64,7 @@ export class UserEntity extends AppEntity {
   /**
    * Relations
    */
-  @ManyToOne(() => RoleEntity, (role) => role.id)
+  @OneToOne(() => RoleEntity, (role) => role.user)
   @JoinColumn({ name: 'role_id' })
   public role: RoleEntity;
 
