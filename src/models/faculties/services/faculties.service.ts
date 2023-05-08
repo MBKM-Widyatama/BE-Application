@@ -1,10 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FacultiesEntity } from '../entities/faculties.entity';
 import { ICreateFaculty } from '../interfaces/faculties.interface';
 import { ListOptionDto, PageMetaDto, PaginateDto } from 'src/libraries/common';
 import { getSortColumns } from 'src/libraries/common/helpers';
+import { UpdateFacultyDto } from 'src/services/master-faculties/dtos/update-faculty.dto';
 
 @Injectable()
 export class FacultiesService {
@@ -14,8 +19,27 @@ export class FacultiesService {
   ) {}
 
   /**
+   * @description Handle find faculty by id
+   * @param {string} id
+   *
+   * @returns {Promise<FacultiesEntity>}
+   */
+  async findFacultyById(id: string): Promise<FacultiesEntity> {
+    try {
+      return await this.FacultiesRepository.findOneBy({
+        id,
+      });
+    } catch (err) {
+      throw new NotFoundException('Not Found', {
+        cause: new Error(),
+        description: err.response ? err?.response?.error : err.message,
+      });
+    }
+  }
+
+  /**
    * @description Handle find all faculties
-   * @param {string} name
+   * @param {filters} ListOptionDto
    * @returns {Promise<FacultiesEntity[]>}
    */
   async findAllFaculties(
@@ -74,15 +98,6 @@ export class FacultiesService {
   }
 
   /**
-   * @description Handle find faculty by name
-   * @param {string} name
-   * @returns {Promise<FacultiesEntity>}
-   */
-  findFacultyByName(name: string): Promise<FacultiesEntity> {
-    return this.FacultiesRepository.findOne({ where: { name } });
-  }
-
-  /**
    * @description Handle create faculty
    * @param {Object} payload
    *
@@ -92,5 +107,25 @@ export class FacultiesService {
     const role = this.FacultiesRepository.create(payload);
 
     return this.FacultiesRepository.save(role);
+  }
+
+  /**
+   * @description Handle update faculty
+   * @param {string} id
+   * @requestBody {Object} payload
+   *
+   * @returns {Promise<FacultiesEntity>}
+   */
+  async updateFaculty(id: string, payload: UpdateFacultyDto): Promise<any> {
+    try {
+      this.findFacultyById(id);
+
+      await this.FacultiesRepository.update(id, payload);
+    } catch (error) {
+      throw new BadRequestException('Bad Request', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
   }
 }

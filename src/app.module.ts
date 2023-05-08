@@ -1,3 +1,4 @@
+import { IsExistsConstraint } from './libraries/common';
 import { APP_GUARD } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { AuthenticationModule } from 'src/services/authentication/authentication.module';
@@ -33,6 +34,7 @@ import { MasterFacultiesModule } from './services/master-faculties/master-facult
     MasterFacultiesModule,
   ],
   providers: [
+    IsExistsConstraint,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

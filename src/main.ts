@@ -12,6 +12,7 @@ import { CustomBaseResponseInterceptor } from './libraries/common/interceptors';
 
 // Third-party imports
 import * as compression from 'compression';
+import { useContainer } from 'class-validator';
 import { setupFirebase } from './libraries/config/firebase/firebase.config';
 
 async function bootstrap() {
@@ -55,6 +56,11 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ transform: true, whitelist: true }));
   app.useGlobalInterceptors(new CustomBaseResponseInterceptor());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
+
+  /**
+   * https://dev.to/avantar/custom-validation-with-database-in-nestjs-gao
+   */
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   /**
    * Set Firebase
