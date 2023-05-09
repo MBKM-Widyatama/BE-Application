@@ -21,10 +21,10 @@ export class LecturerEntity extends AppEntity {
   public name: string;
 
   @Column({ unique: true })
-  public nrk: bigint;
+  public nrk: number;
 
   @Column({ unique: true })
-  public nidn: bigint;
+  public nidn: number;
 
   @Column()
   public profile_picture: string;
