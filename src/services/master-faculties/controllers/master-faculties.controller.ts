@@ -8,6 +8,8 @@ import {
   Query,
   Param,
   Put,
+  Delete,
+  Patch,
 } from '@nestjs/common';
 import { FacultiesService } from 'src/models/faculties/services/faculties.service';
 import { Throttle } from '@nestjs/throttler';
@@ -69,6 +71,32 @@ export class MasterFacultiesController {
 
     return {
       message: 'Faculty has been updated successfully',
+      result,
+    };
+  }
+
+  @Delete(':id')
+  @HttpCode(200)
+  @Throttle(3, 60)
+  @Roles(Role.SuperAdmin)
+  async delete(@Param() requestParams: DetailOptionDto): Promise<any> {
+    const result = await this.FacultiesService.deleteFaculty(requestParams.id);
+
+    return {
+      message: 'Faculty has been deleted successfully',
+      result,
+    };
+  }
+
+  @Patch(':id')
+  @HttpCode(200)
+  @Throttle(3, 60)
+  @Roles(Role.SuperAdmin)
+  async restore(@Param() requestParams: DetailOptionDto): Promise<any> {
+    const result = await this.FacultiesService.restoreFaculty(requestParams.id);
+
+    return {
+      message: 'Faculty has been restored successfully',
       result,
     };
   }

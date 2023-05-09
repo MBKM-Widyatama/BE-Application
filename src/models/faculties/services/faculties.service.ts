@@ -13,6 +13,8 @@ import { UpdateFacultyDto } from 'src/services/master-faculties/dtos/update-facu
 
 @Injectable()
 export class FacultiesService {
+  private readonly FacultiesModel = new FacultiesEntity();
+
   constructor(
     @InjectRepository(FacultiesEntity)
     private readonly FacultiesRepository: Repository<FacultiesEntity>,
@@ -121,6 +123,53 @@ export class FacultiesService {
       this.findFacultyById(id);
 
       await this.FacultiesRepository.update(id, payload);
+    } catch (error) {
+      throw new BadRequestException('Bad Request', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
+  }
+
+  /**
+   * @description Handle delete faculty
+   * @param {string} id
+   *
+   * @returns {Promise<FacultiesEntity>}
+   */
+  async deleteFaculty(id: string): Promise<FacultiesEntity> {
+    try {
+      const faculty = await this.findFacultyById(id);
+      const deletedAt = Math.floor(Date.now() / 1000);
+
+      this.FacultiesRepository.merge(this.FacultiesModel, faculty, {
+        deleted_at: deletedAt,
+      });
+      return await this.FacultiesRepository.save(this.FacultiesModel, {
+        data: { action: 'DELETE' },
+      });
+    } catch (error) {
+      throw new BadRequestException('Bad Request', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
+  }
+
+  /**
+   * @description Handle restore faculty
+   * @param {string} id
+   *
+   * @returns {Promise<FacultiesEntity>}
+   */
+  async restoreFaculty(id: string): Promise<FacultiesEntity> {
+    try {
+      const faculty = await this.findFacultyById(id);
+
+      this.FacultiesRepository.merge(this.FacultiesModel, faculty);
+      return await this.FacultiesRepository.save(this.FacultiesModel, {
+        data: { action: 'RESTORE' },
+      });
     } catch (error) {
       throw new BadRequestException('Bad Request', {
         cause: new Error(),
