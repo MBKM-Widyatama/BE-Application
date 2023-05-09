@@ -15,11 +15,11 @@ import { FacultiesService } from 'src/models/faculties/services/faculties.servic
 import { Throttle } from '@nestjs/throttler';
 import {
   AuthenticationJWTGuard,
-  RolesGuard,
-  Role,
   ListOptionDto,
+  Role,
+  Roles,
+  RolesGuard,
 } from 'src/libraries/common';
-import { Roles } from 'src/libraries/common/decorators';
 import { CreateFacultyDto } from '../dtos';
 import { UpdateFacultyDto } from '../dtos/update-faculty.dto';
 import { DetailOptionDto } from 'src/libraries/common/dto/detail-option.dto';
