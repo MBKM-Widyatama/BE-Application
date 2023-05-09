@@ -8,6 +8,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { LecturerEntity } from '../entities/lecturers.entity';
 import { ListOptionDto, PageMetaDto, PaginateDto } from 'src/libraries/common';
 import { getSortColumns } from 'src/libraries/common/helpers';
+import { ICreateLecturer } from '../interfaces/lecturer.interface';
 
 @Injectable()
 export class LecturersService {
@@ -27,16 +28,19 @@ export class LecturersService {
     query: SelectQueryBuilder<LecturerEntity>,
   ) {
     try {
+      // Query has relation
+      query.leftJoinAndSelect('lecturer.faculty', 'faculties');
+
       if (filters.search) {
-        query.andWhere('users.username LIKE :search', {
+        query.andWhere('lecturer.name LIKE :search', {
           search: `%${filters.search}%`,
         });
       }
 
       if (filters.isDeleted) {
-        query.andWhere('deleted_at IS NOT NULL');
+        query.andWhere('lecturer.deleted_at IS NOT NULL');
       } else {
-        query.andWhere('deleted_at IS NULL');
+        query.andWhere('lecturer.deleted_at IS NULL');
       }
 
       if (filters.sort) {
@@ -112,5 +116,17 @@ export class LecturersService {
         description: error.response ? error?.response?.error : error.message,
       });
     }
+  }
+
+  /**
+   * @description Handle create lecturer
+   * @param {Object} payload
+   *
+   * @returns {Promise<LecturerEntity>}
+   */
+  createLecturer(payload: ICreateLecturer): Promise<LecturerEntity> {
+    const lecturer = this.LecturerRepository.create(payload);
+
+    return this.LecturerRepository.save(lecturer);
   }
 }

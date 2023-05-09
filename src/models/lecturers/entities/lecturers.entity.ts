@@ -1,20 +1,13 @@
 import { AppEntity } from '../../../libraries/common/entities';
 import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
 import { FacultiesEntity } from 'src/models/faculties/entities/faculties.entity';
-
-enum Sex {
-  MALE = 'MALE',
-  FEMALE = 'FEMALE',
-}
-
-enum MaritalStatus {
-  MARRIED = 'MARRIED',
-  UNMARRIED = 'UNMARRIED',
-}
+import { MaritalStatusEnumeraton, SexEnumeration } from 'src/libraries/common';
+import { Exclude } from 'class-transformer';
 
 @Entity({ name: 'lecturer' })
 export class LecturerEntity extends AppEntity {
   @Column()
+  @Exclude()
   public faculty_id: string;
 
   @Column()
@@ -29,15 +22,18 @@ export class LecturerEntity extends AppEntity {
   @Column()
   public profile_picture: string;
 
-  @Column({ enum: [Sex.MALE, Sex.FEMALE], enumName: 'sexEnumeration' })
-  public sex: Sex;
+  @Column({
+    enum: [SexEnumeration.MALE, SexEnumeration.FEMALE],
+    enumName: 'sexEnumeration',
+  })
+  public sex: SexEnumeration;
 
   @Column({
-    enum: [MaritalStatus.MARRIED, MaritalStatus.UNMARRIED],
+    enum: [MaritalStatusEnumeraton.MARRIED, MaritalStatusEnumeraton.UNMARRIED],
     enumName: 'maritalStatusEnumeration',
-    default: `'${MaritalStatus.UNMARRIED}'`,
+    default: `'${MaritalStatusEnumeraton.UNMARRIED}'`,
   })
-  public marital_status: MaritalStatus;
+  public marital_status: MaritalStatusEnumeraton;
 
   /**
    * Relations

@@ -1,8 +1,10 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   Param,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -16,6 +18,7 @@ import {
   RolesGuard,
 } from 'src/libraries/common';
 import { LecturersService } from 'src/models/lecturers/services/lecturers.service';
+import { CreateLecturerDto } from '../dtos/create-lecturer.dto';
 
 @Controller('master-lecturer')
 @UseGuards(AuthenticationJWTGuard, RolesGuard)
@@ -47,6 +50,19 @@ export class MasterLecturerController {
 
     return {
       message: 'Lecturer has been retrieve successfully',
+      result,
+    };
+  }
+
+  @Post()
+  @HttpCode(201)
+  @Throttle(3, 60)
+  @Roles(Role.SuperAdmin)
+  async create(@Body() requestBody: CreateLecturerDto): Promise<any> {
+    const result = await this.LecturerService.createLecturer(requestBody);
+
+    return {
+      message: 'Lecturer has been created successfully',
       result,
     };
   }

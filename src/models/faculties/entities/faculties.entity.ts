@@ -1,6 +1,7 @@
 import { AppEntity } from '../../../libraries/common/entities';
-import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, OneToOne } from 'typeorm';
 import { UserEntity } from 'src/models/users/entities/user.entity';
+import { LecturerEntity } from 'src/models/lecturers/entities/lecturers.entity';
 
 @Entity({ name: 'faculties' })
 export class FacultiesEntity extends AppEntity {
@@ -14,6 +15,8 @@ export class FacultiesEntity extends AppEntity {
    * Relations
    */
   @OneToOne(() => UserEntity, (user) => user.id)
-  @JoinColumn({ name: 'leader_id' })
   public leader: UserEntity;
+
+  @OneToOne(() => LecturerEntity, (lecturer) => lecturer.faculty_id)
+  public lecturer: LecturerEntity;
 }
