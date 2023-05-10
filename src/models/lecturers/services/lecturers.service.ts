@@ -107,8 +107,9 @@ export class LecturersService {
    */
   async findLecturerById(id: string): Promise<LecturerEntity> {
     try {
-      return await this.LecturerRepository.findOneBy({
-        id,
+      return await this.LecturerRepository.findOne({
+        where: { id },
+        relations: ['faculty'],
       });
     } catch (error) {
       throw new NotFoundException('Not Found', {
@@ -128,5 +129,26 @@ export class LecturersService {
     const lecturer = this.LecturerRepository.create(payload);
 
     return this.LecturerRepository.save(lecturer);
+  }
+
+  /**
+   * @description Handle update lecturer
+   * @param {string} id
+   * @param {Object} payload
+   *
+   * @returns {Promise<LecturerEntity>}
+   */
+  async updateLecturer(id: string, payload: ICreateLecturer): Promise<any> {
+    try {
+      await this.findLecturerById(id);
+      await this.LecturerRepository.update(id, payload);
+
+      return await this.findLecturerById(id);
+    } catch (error) {
+      throw new BadRequestException('Bad Request', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
   }
 }

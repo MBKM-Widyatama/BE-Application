@@ -5,6 +5,7 @@ import {
   HttpCode,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -63,6 +64,25 @@ export class MasterLecturerController {
 
     return {
       message: 'Lecturer has been created successfully',
+      result,
+    };
+  }
+
+  @Put(':id')
+  @HttpCode(200)
+  @Throttle(3, 60)
+  @Roles(Role.SuperAdmin)
+  async update(
+    @Param() requestParams: DetailOptionDto,
+    @Body() requestBody: CreateLecturerDto,
+  ): Promise<any> {
+    const result = await this.LecturerService.updateLecturer(
+      requestParams.id,
+      requestBody,
+    );
+
+    return {
+      message: 'Lecturer has been updated successfully',
       result,
     };
   }
