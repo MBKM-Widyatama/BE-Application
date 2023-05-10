@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -83,6 +85,32 @@ export class MasterLecturerController {
 
     return {
       message: 'Lecturer has been updated successfully',
+      result,
+    };
+  }
+
+  @Delete(':id')
+  @HttpCode(200)
+  @Throttle(3, 60)
+  @Roles(Role.SuperAdmin)
+  async delete(@Param() requestParams: DetailOptionDto): Promise<any> {
+    const result = await this.LecturerService.deleteLecturer(requestParams.id);
+
+    return {
+      message: 'Lecturer has been deleted successfully',
+      result,
+    };
+  }
+
+  @Patch(':id/restore')
+  @HttpCode(200)
+  @Throttle(3, 60)
+  @Roles(Role.SuperAdmin)
+  async restore(@Param() requestParams: DetailOptionDto): Promise<any> {
+    const result = await this.LecturerService.restoreLecturer(requestParams.id);
+
+    return {
+      message: 'Lecturer has been restored successfully',
       result,
     };
   }

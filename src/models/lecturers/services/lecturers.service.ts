@@ -12,6 +12,8 @@ import { ICreateLecturer } from '../interfaces/lecturer.interface';
 
 @Injectable()
 export class LecturersService {
+  private readonly LecturerModel = new LecturerEntity();
+
   constructor(
     @InjectRepository(LecturerEntity)
     private readonly LecturerRepository: Repository<LecturerEntity>,
@@ -144,6 +146,48 @@ export class LecturersService {
       await this.LecturerRepository.update(id, payload);
 
       return await this.findLecturerById(id);
+    } catch (error) {
+      throw new BadRequestException('Bad Request', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
+  }
+
+  /**
+   * @description Handle delete lecturer
+   * @param {string} id
+   *
+   * @returns {Promise<LecturerEntity>}
+   */
+  async deleteLecturer(id: string): Promise<LecturerEntity> {
+    try {
+      const lecturer = await this.findLecturerById(id);
+      const deletedAt = Math.floor(Date.now() / 1000);
+
+      this.LecturerRepository.merge(lecturer, { deleted_at: deletedAt });
+
+      return await this.LecturerRepository.save(lecturer);
+    } catch (error) {
+      throw new BadRequestException('Bad Request', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
+  }
+
+  /**
+   * @description Handle restore lecturer
+   * @param {string} id
+   *
+   * @returns {Promise<LecturerEntity>}
+   */
+  async restoreLecturer(id: string): Promise<LecturerEntity> {
+    try {
+      const lecturer = await this.findLecturerById(id);
+      this.LecturerRepository.merge(lecturer, { deleted_at: null });
+
+      return await this.LecturerRepository.save(lecturer);
     } catch (error) {
       throw new BadRequestException('Bad Request', {
         cause: new Error(),
