@@ -11,6 +11,10 @@ export class LecturerEntity extends AppEntity {
   public faculty_id: string;
 
   @Column()
+  @Exclude()
+  public course_id: string;
+
+  @Column()
   public name: string;
 
   @Column({ unique: true })
