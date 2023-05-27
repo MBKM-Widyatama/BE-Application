@@ -1,6 +1,6 @@
 import { IsString, IsUUID, IsOptional } from 'class-validator';
 
-export class CreateCourseDto {
+export class CreateUpdateCourseDto {
   @IsString()
   @IsUUID()
   @IsOptional()

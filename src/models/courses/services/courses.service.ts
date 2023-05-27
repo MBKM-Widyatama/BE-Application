@@ -4,7 +4,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { CoursesEntity } from '../entities/courses.entity';
 import { getSortColumns } from 'src/libraries/common/helpers';
 import { ListOptionDto, PageMetaDto, PaginateDto } from 'src/libraries/common';
-import { CreateCourseDto } from 'src/services/master-courses/dtos/create-course.dto';
+import { CreateUpdateCourseDto } from 'src/services/master-courses/dtos';
 
 @Injectable()
 export class CoursesService {
@@ -107,7 +107,6 @@ export class CoursesService {
     try {
       return await this.CoursesRepository.findOne({
         where: { id },
-        relations: ['leader'],
       });
     } catch (error) {
       throw new BadRequestException('Bad Request', {
@@ -119,13 +118,36 @@ export class CoursesService {
 
   /**
    * @description Handle create course
-   * @param {Object} payload @type CreateCourseDto
+   * @param {Object} payload @type CreateUpdateCourseDto
    *
    * @return {Promise<CoursesEntity>}
    */
-  async createCourses(payload: CreateCourseDto): Promise<CoursesEntity> {
+  async createCourses(payload: CreateUpdateCourseDto): Promise<CoursesEntity> {
     const course = this.CoursesRepository.create(payload);
 
     return await this.CoursesRepository.save(course);
+  }
+
+  /**
+   * @description Handle update course
+   * @param {string} id
+   * @param {Object} payload @type CreateUpdateCourseDto
+   *
+   * @return {Promise<CoursesEntity>}
+   */
+  async updateCourses(
+    id: string,
+    payload: CreateUpdateCourseDto,
+  ): Promise<any> {
+    try {
+      await this.findCourseById(id);
+
+      return await this.CoursesRepository.update(id, payload);
+    } catch (error) {
+      throw new BadRequestException('Bad Request', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
   }
 }

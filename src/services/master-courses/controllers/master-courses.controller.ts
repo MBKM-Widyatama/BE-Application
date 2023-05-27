@@ -5,6 +5,7 @@ import {
   HttpCode,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -18,7 +19,7 @@ import {
   DetailOptionDto,
 } from 'src/libraries/common';
 import { CoursesService as Service } from 'src/models/courses/services/courses.service';
-import { CreateCourseDto } from '../dtos/create-course.dto';
+import { CreateUpdateCourseDto } from '../dtos/create-update-course.dto';
 
 @Controller('master-courses')
 @UseGuards(AuthenticationJWTGuard, RolesGuard)
@@ -56,11 +57,32 @@ export class MasterCoursesController {
   @HttpCode(201)
   @Throttle(5, 10)
   @Roles(Role.SuperAdmin)
-  public async create(@Body() requestBody: CreateCourseDto): Promise<any> {
+  public async create(
+    @Body() requestBody: CreateUpdateCourseDto,
+  ): Promise<any> {
     const result = await this.CoursesService.createCourses(requestBody);
 
     return {
       message: 'Course has been created successfully',
+      result,
+    };
+  }
+
+  @Put(':id')
+  @HttpCode(200)
+  @Throttle(5, 10)
+  @Roles(Role.SuperAdmin)
+  public async update(
+    @Param() requestParams: DetailOptionDto,
+    @Body() requestBody: CreateUpdateCourseDto,
+  ): Promise<any> {
+    const result = await this.CoursesService.updateCourses(
+      requestParams.id,
+      requestBody,
+    );
+
+    return {
+      message: 'Course has been updated successfully',
       result,
     };
   }
