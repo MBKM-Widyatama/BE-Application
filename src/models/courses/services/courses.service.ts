@@ -4,6 +4,7 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { CoursesEntity } from '../entities/courses.entity';
 import { getSortColumns } from 'src/libraries/common/helpers';
 import { ListOptionDto, PageMetaDto, PaginateDto } from 'src/libraries/common';
+import { CreateCourseDto } from 'src/services/master-courses/dtos/create-course.dto';
 
 @Injectable()
 export class CoursesService {
@@ -114,5 +115,17 @@ export class CoursesService {
         description: error.response ? error?.response?.error : error.message,
       });
     }
+  }
+
+  /**
+   * @description Handle create course
+   * @param {Object} payload @type CreateCourseDto
+   *
+   * @return {Promise<CoursesEntity>}
+   */
+  async createCourses(payload: CreateCourseDto): Promise<CoursesEntity> {
+    const course = this.CoursesRepository.create(payload);
+
+    return await this.CoursesRepository.save(course);
   }
 }

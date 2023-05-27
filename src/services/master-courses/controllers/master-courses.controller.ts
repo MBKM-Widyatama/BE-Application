@@ -1,8 +1,10 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   Param,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -15,13 +17,14 @@ import {
   ListOptionDto,
   DetailOptionDto,
 } from 'src/libraries/common';
-import { CoursesService } from 'src/models/courses/services/courses.service';
+import { CoursesService as Service } from 'src/models/courses/services/courses.service';
+import { CreateCourseDto } from '../dtos/create-course.dto';
 
 @Controller('master-courses')
 @UseGuards(AuthenticationJWTGuard, RolesGuard)
 @Roles(Role.SuperAdmin)
 export class MasterCoursesController {
-  constructor(private readonly CoursesService: CoursesService) {}
+  constructor(private readonly CoursesService: Service) {}
 
   @Get()
   @HttpCode(200)
@@ -45,6 +48,19 @@ export class MasterCoursesController {
 
     return {
       message: 'Course has been retrieved successfully',
+      result,
+    };
+  }
+
+  @Post()
+  @HttpCode(201)
+  @Throttle(5, 10)
+  @Roles(Role.SuperAdmin)
+  public async create(@Body() requestBody: CreateCourseDto): Promise<any> {
+    const result = await this.CoursesService.createCourses(requestBody);
+
+    return {
+      message: 'Course has been created successfully',
       result,
     };
   }
