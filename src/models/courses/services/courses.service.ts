@@ -150,4 +150,49 @@ export class CoursesService {
       });
     }
   }
+
+  /**
+   * @description Handle delete course
+   * @param {string} id
+   *
+   * @return {Promise<CoursesEntity>}
+   */
+  async deleteCourses(id: string): Promise<CoursesEntity> {
+    try {
+      const course = await this.findCourseById(id);
+      const deletedAt = Math.floor(Date.now() / 1000);
+      this.CoursesRepository.merge(course, { deleted_at: deletedAt });
+
+      await this.CoursesRepository.save(course);
+
+      return this.findCourseById(id);
+    } catch (error) {
+      throw new BadRequestException('Bad Request', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
+  }
+
+  /**
+   * @description Handle restore course
+   * @param {string} id
+   *
+   * @return {Promise<CoursesEntity>}
+   */
+  async restoreCourses(id: string): Promise<CoursesEntity> {
+    try {
+      const course = await this.findCourseById(id);
+      this.CoursesRepository.merge(course, { deleted_at: null });
+
+      await this.CoursesRepository.save(course);
+
+      return await this.findCourseById(id);
+    } catch (error) {
+      throw new BadRequestException('Bad Request', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
+  }
 }
