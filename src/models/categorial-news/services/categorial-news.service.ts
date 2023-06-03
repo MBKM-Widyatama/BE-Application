@@ -4,18 +4,27 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import {
+  DataSource,
+  EntityManager,
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
 import { CategorialNewsEntity } from '../entities/categorial-news.entity';
 import { ListOptionDto, PageMetaDto, PaginateDto } from 'src/libraries/common';
 import { getSortColumns } from 'src/libraries/common/helpers';
 import { IResultFilters } from 'src/libraries/common/interfaces';
-import { CreateCategorialNewsDto } from 'src/services/master-categorial-news/dtos';
+import {
+  CreateCategorialNewsDto,
+  UpdateCategorialNewsDto,
+} from 'src/services/master-categorial-news/dtos';
 
 @Injectable()
 export class CategorialNewsService {
   constructor(
     @InjectRepository(CategorialNewsEntity)
     private readonly CategorialNewsRepository: Repository<CategorialNewsEntity>,
+    private readonly DataSource: DataSource,
   ) {}
 
   /**
@@ -132,6 +141,35 @@ export class CategorialNewsService {
     try {
       const categorialNews = this.CategorialNewsRepository.create(payload);
       await this.CategorialNewsRepository.save(categorialNews);
+
+      return await this.findCategorialNewsById(categorialNews.id);
+    } catch (error) {
+      throw new NotFoundException('Not Found', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
+  }
+
+  /**
+   * @description Handle update data categorial news
+   * @param {string} id
+   * @param {Object} payload @type UpdateCategorialNewsDto
+   *
+   * @return {Promise<CategorialNewsEntity>}
+   */
+  async updateCategorialNews(
+    id: string,
+    payload: UpdateCategorialNewsDto,
+  ): Promise<CategorialNewsEntity> {
+    // Make sure if categorial news exist
+    const categorialNews = await this.findCategorialNewsById(id);
+
+    try {
+      await this.DataSource.transaction(async (manager: EntityManager) => {
+        this.CategorialNewsRepository.merge(categorialNews, payload);
+        await manager.save(categorialNews);
+      });
 
       return await this.findCategorialNewsById(categorialNews.id);
     } catch (error) {

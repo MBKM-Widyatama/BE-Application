@@ -5,6 +5,7 @@ import {
   HttpCode,
   Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -18,7 +19,7 @@ import {
   DetailOptionDto,
 } from 'src/libraries/common';
 import { CategorialNewsService as Service } from 'src/models/categorial-news/services/categorial-news.service';
-import { CreateCategorialNewsDto } from '../dtos';
+import { CreateCategorialNewsDto, UpdateCategorialNewsDto } from '../dtos';
 
 @Controller('master-categorial-news')
 @UseGuards(AuthenticationJWTGuard, RolesGuard)
@@ -57,7 +58,6 @@ export class MasterCategorialNewsController {
   @Post()
   @HttpCode(201)
   @Throttle(5, 10)
-  @Roles(Role.SuperAdmin, Role.Courses, Role.Faculty)
   public async create(
     @Body() requestBody: CreateCategorialNewsDto,
   ): Promise<any> {
@@ -67,6 +67,24 @@ export class MasterCategorialNewsController {
 
     return {
       message: 'Categorial News has been created successfully',
+      result,
+    };
+  }
+
+  @Put(':id')
+  @HttpCode(200)
+  @Throttle(5, 10)
+  public async update(
+    @Param() requestParams: DetailOptionDto,
+    @Body() requestBody: UpdateCategorialNewsDto,
+  ): Promise<any> {
+    const result = await this.CategorialNewsService.updateCategorialNews(
+      requestParams.id,
+      requestBody,
+    );
+
+    return {
+      message: 'Categorial News has been updated successfully',
       result,
     };
   }

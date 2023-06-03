@@ -1,15 +1,16 @@
-import { Allow, IsString } from 'class-validator';
+import { Allow, IsNotEmpty, IsString } from 'class-validator';
 import { IsExists } from 'src/libraries/common';
 
 export class UpdateCategorialNewsDto {
   @Allow()
   public context?: {
-    query: any;
     params: any;
+    query: any;
     user: any;
   };
 
   @IsString()
-  @IsExists('categorial_news', 'name')
+  @IsNotEmpty()
+  @IsExists('categorial_news', 'name', 'id')
   public name: string;
 }
