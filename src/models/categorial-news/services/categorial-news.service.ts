@@ -179,4 +179,53 @@ export class CategorialNewsService {
       });
     }
   }
+
+  /**
+   * @description Handle delete data categorial news
+   * @param {string} id
+   *
+   * @return {Promise<CategorialNewsEntity>}
+   */
+  async deleteCategorialNews(id: string): Promise<CategorialNewsEntity> {
+    try {
+      const categorialNews = await this.findCategorialNewsById(id);
+      const deletedAt = Math.floor(Date.now() / 1000);
+      this.CategorialNewsRepository.merge(categorialNews, {
+        deleted_at: deletedAt,
+      });
+
+      await this.CategorialNewsRepository.save(categorialNews);
+
+      return await this.findCategorialNewsById(categorialNews.id);
+    } catch (error) {
+      throw new NotFoundException('Not Found', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
+  }
+
+  /**
+   * @description Handle restore data categorial news
+   * @param {string} id
+   *
+   * @return {Promise<CategorialNewsEntity>}
+   */
+  async restoreCategorialNews(id: string): Promise<CategorialNewsEntity> {
+    try {
+      const categorialNews = await this.findCategorialNewsById(id);
+      this.CategorialNewsRepository.merge(categorialNews, {
+        deleted_at: null,
+      });
+
+      await this.CategorialNewsRepository.save(categorialNews);
+
+      return await this.findCategorialNewsById(categorialNews.id);
+    } catch (error) {
+      throw new NotFoundException('Not Found', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
+  }
 }

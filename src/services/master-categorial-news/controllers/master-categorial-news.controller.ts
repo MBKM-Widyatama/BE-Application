@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -85,6 +87,34 @@ export class MasterCategorialNewsController {
 
     return {
       message: 'Categorial News has been updated successfully',
+      result,
+    };
+  }
+
+  @Delete(':id')
+  @HttpCode(200)
+  @Throttle(5, 10)
+  public async delete(@Param() requestParams: DetailOptionDto): Promise<any> {
+    const result = await this.CategorialNewsService.deleteCategorialNews(
+      requestParams.id,
+    );
+
+    return {
+      message: 'Categorial News has been deleted successfully',
+      result,
+    };
+  }
+
+  @Patch(':id/restore')
+  @HttpCode(200)
+  @Throttle(5, 10)
+  public async restore(@Param() requestParams: DetailOptionDto): Promise<any> {
+    const result = await this.CategorialNewsService.restoreCategorialNews(
+      requestParams.id,
+    );
+
+    return {
+      message: 'Categorial News has been restored successfully',
       result,
     };
   }
