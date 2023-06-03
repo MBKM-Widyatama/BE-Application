@@ -1,8 +1,10 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
   Param,
+  Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
@@ -16,6 +18,7 @@ import {
   DetailOptionDto,
 } from 'src/libraries/common';
 import { CategorialNewsService as Service } from 'src/models/categorial-news/services/categorial-news.service';
+import { CreateCategorialNewsDto } from '../dtos';
 
 @Controller('master-categorial-news')
 @UseGuards(AuthenticationJWTGuard, RolesGuard)
@@ -26,7 +29,6 @@ export class MasterCategorialNewsController {
   @Get()
   @HttpCode(200)
   @Throttle(5, 10)
-  @Roles(Role.SuperAdmin, Role.Courses, Role.Faculty)
   public async findAll(@Query() requestQuery: ListOptionDto): Promise<any> {
     const result = await this.CategorialNewsService.findAllCategorialNews(
       requestQuery,
@@ -41,7 +43,6 @@ export class MasterCategorialNewsController {
   @Get(':id')
   @HttpCode(200)
   @Throttle(5, 10)
-  @Roles(Role.SuperAdmin, Role.Courses, Role.Faculty)
   public async findOne(@Param() requestParams: DetailOptionDto): Promise<any> {
     const result = await this.CategorialNewsService.findCategorialNewsById(
       requestParams.id,
@@ -49,6 +50,23 @@ export class MasterCategorialNewsController {
 
     return {
       message: 'Categorial News has been retrieved successfully',
+      result,
+    };
+  }
+
+  @Post()
+  @HttpCode(201)
+  @Throttle(5, 10)
+  @Roles(Role.SuperAdmin, Role.Courses, Role.Faculty)
+  public async create(
+    @Body() requestBody: CreateCategorialNewsDto,
+  ): Promise<any> {
+    const result = await this.CategorialNewsService.createCategorialNews(
+      requestBody,
+    );
+
+    return {
+      message: 'Categorial News has been created successfully',
       result,
     };
   }

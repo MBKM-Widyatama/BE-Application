@@ -9,6 +9,7 @@ import { CategorialNewsEntity } from '../entities/categorial-news.entity';
 import { ListOptionDto, PageMetaDto, PaginateDto } from 'src/libraries/common';
 import { getSortColumns } from 'src/libraries/common/helpers';
 import { IResultFilters } from 'src/libraries/common/interfaces';
+import { CreateCategorialNewsDto } from 'src/services/master-categorial-news/dtos';
 
 @Injectable()
 export class CategorialNewsService {
@@ -111,6 +112,28 @@ export class CategorialNewsService {
           id,
         },
       });
+    } catch (error) {
+      throw new NotFoundException('Not Found', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
+  }
+
+  /**
+   * @description Handle create data categorial news
+   * @param {Object} payload @type CreateCategorialNewsDto
+   *
+   * @return {Promise<CategorialNewsEntity>}
+   */
+  async createCategorialNews(
+    payload: CreateCategorialNewsDto,
+  ): Promise<CategorialNewsEntity> {
+    try {
+      const categorialNews = this.CategorialNewsRepository.create(payload);
+      await this.CategorialNewsRepository.save(categorialNews);
+
+      return await this.findCategorialNewsById(categorialNews.id);
     } catch (error) {
       throw new NotFoundException('Not Found', {
         cause: new Error(),
