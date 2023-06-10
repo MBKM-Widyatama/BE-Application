@@ -1,7 +1,10 @@
 import { AppEntity } from '../../../libraries/common/entities';
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { FacultiesEntity } from '../../faculties/entities/faculties.entity';
-import { MaritalStatusEnumeraton, SexEnumeration } from 'src/libraries/common';
+import {
+  MaritalStatusEnumeraton,
+  SexEnumeration,
+} from '../../../libraries/common/enums';
 import { Exclude } from 'class-transformer';
 
 @Entity({ name: 'lecturer' })
