@@ -21,7 +21,7 @@ import {
   DetailOptionDto,
 } from 'src/libraries/common';
 import { CoursesService as Service } from 'src/models/courses/services/courses.service';
-import { CreateUpdateCourseDto } from '../dtos/create-update-course.dto';
+import { CreateCourseDto, UpdateCourseDto } from '../dtos';
 
 @Controller('master-courses')
 @UseGuards(AuthenticationJWTGuard, RolesGuard)
@@ -59,9 +59,7 @@ export class MasterCoursesController {
   @HttpCode(201)
   @Throttle(5, 10)
   @Roles(Role.SuperAdmin)
-  public async create(
-    @Body() requestBody: CreateUpdateCourseDto,
-  ): Promise<any> {
+  public async create(@Body() requestBody: CreateCourseDto): Promise<any> {
     const result = await this.CoursesService.createCourses(requestBody);
 
     return {
@@ -76,7 +74,7 @@ export class MasterCoursesController {
   @Roles(Role.SuperAdmin)
   public async update(
     @Param() requestParams: DetailOptionDto,
-    @Body() requestBody: CreateUpdateCourseDto,
+    @Body() requestBody: UpdateCourseDto,
   ): Promise<any> {
     const result = await this.CoursesService.updateCourses(
       requestParams.id,

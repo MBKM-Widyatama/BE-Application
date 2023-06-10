@@ -1,4 +1,4 @@
-import { AppEntity } from 'src/libraries/common';
+import { AppEntity } from '../../../libraries/common/entities';
 import { Entity, Column } from 'typeorm';
 
 @Entity({ name: 'categorial_news' })

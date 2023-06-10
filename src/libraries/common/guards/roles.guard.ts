@@ -31,6 +31,6 @@ export class RolesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const user: IRequestUserPassport = request.user;
 
-    return this.matchRoles(requiredRoles, user.role.name);
+    return this.matchRoles(requiredRoles, user.role);
   }
 }

@@ -1,7 +1,7 @@
-import { AppEntity } from 'src/libraries/common';
+import { AppEntity } from '../../../libraries/common/entities';
 import { Entity, Column, OneToOne, OneToMany } from 'typeorm';
-import { UserEntity } from 'src/models/users/entities/user.entity';
-import { LecturerEntity } from 'src/models/lecturers/entities/lecturers.entity';
+import { UserEntity } from '../../../models/users/entities/user.entity';
+import { LecturerEntity } from '../../../models/lecturers/entities/lecturers.entity';
 
 @Entity({ name: 'courses' })
 export class CoursesEntity extends AppEntity {
