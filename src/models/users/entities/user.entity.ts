@@ -4,7 +4,7 @@ import { Exclude } from 'class-transformer';
 import * as dotenv from 'dotenv';
 import * as bcrypt from 'bcrypt';
 import { RoleEntity } from '../../roles/entities/roles.entity';
-import { FacultiesEntity } from 'src/models/faculties/entities/faculties.entity';
+import { FacultiesEntity } from '../../faculties/entities/faculties.entity';
 
 dotenv.config();
 
