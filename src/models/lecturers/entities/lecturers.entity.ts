@@ -1,6 +1,6 @@
 import { AppEntity } from '../../../libraries/common/entities';
 import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { FacultiesEntity } from 'src/models/faculties/entities/faculties.entity';
+import { FacultiesEntity } from '../../faculties/entities/faculties.entity';
 import { MaritalStatusEnumeraton, SexEnumeration } from 'src/libraries/common';
 import { Exclude } from 'class-transformer';
 
