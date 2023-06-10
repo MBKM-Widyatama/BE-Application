@@ -11,6 +11,10 @@ import { FacultiesModule } from './models/faculties/faculties.module';
 import { LecturersModule } from './models/lecturers/lecturers.module';
 import { MasterFacultiesModule } from './services/master-faculties/master-faculties.module';
 import { MasterLecturerModule } from './services/master-lecturer/master-lecturer.module';
+import { CoursesModule } from './models/courses/courses.module';
+import { MasterCoursesModule } from './services/master-courses/master-courses.module';
+import { CategorialNewsModule } from './models/categorial-news/categorial-news.module';
+import { MasterCategorialNewsModule } from './services/master-categorial-news/master-categorial-news.module';
 
 @Module({
   imports: [
@@ -34,6 +38,10 @@ import { MasterLecturerModule } from './services/master-lecturer/master-lecturer
     LecturersModule,
     MasterFacultiesModule,
     MasterLecturerModule,
+    CoursesModule,
+    MasterCoursesModule,
+    CategorialNewsModule,
+    MasterCategorialNewsModule,
   ],
   providers: [
     IsExistsConstraint,
