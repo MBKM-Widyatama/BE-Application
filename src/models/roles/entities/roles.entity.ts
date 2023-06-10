@@ -1,6 +1,6 @@
 import { AppEntity } from '../../../libraries/common/entities/app-entity.abstract';
 import { Entity, Column, OneToOne } from 'typeorm';
-import { UserEntity } from 'src/models/users/entities/user.entity';
+import { UserEntity } from '../../users/entities/user.entity';
 
 @Entity({ name: 'roles' })
 export class RoleEntity extends AppEntity {
