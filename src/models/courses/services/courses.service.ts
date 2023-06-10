@@ -4,7 +4,10 @@ import { Repository, SelectQueryBuilder } from 'typeorm';
 import { CoursesEntity } from '../entities/courses.entity';
 import { getSortColumns } from 'src/libraries/common/helpers';
 import { ListOptionDto, PageMetaDto, PaginateDto } from 'src/libraries/common';
-import { CreateUpdateCourseDto } from 'src/services/master-courses/dtos';
+import {
+  CreateCourseDto,
+  UpdateCourseDto,
+} from 'src/services/master-courses/dtos';
 
 @Injectable()
 export class CoursesService {
@@ -122,7 +125,7 @@ export class CoursesService {
    *
    * @return {Promise<CoursesEntity>}
    */
-  async createCourses(payload: CreateUpdateCourseDto): Promise<CoursesEntity> {
+  async createCourses(payload: CreateCourseDto): Promise<CoursesEntity> {
     const course = this.CoursesRepository.create(payload);
 
     return await this.CoursesRepository.save(course);
@@ -135,10 +138,7 @@ export class CoursesService {
    *
    * @return {Promise<CoursesEntity>}
    */
-  async updateCourses(
-    id: string,
-    payload: CreateUpdateCourseDto,
-  ): Promise<any> {
+  async updateCourses(id: string, payload: UpdateCourseDto): Promise<any> {
     try {
       await this.findCourseById(id);
 

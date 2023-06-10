@@ -19,8 +19,6 @@ import { IResultFilters } from 'src/libraries/common/interfaces';
 
 @Injectable()
 export class FacultiesService {
-  private readonly FacultiesModel = new FacultiesEntity();
-
   constructor(
     @InjectRepository(FacultiesEntity)
     private readonly FacultiesRepository: Repository<FacultiesEntity>,
@@ -30,7 +28,7 @@ export class FacultiesService {
   /**
    * @description Handle filters data
    * @param {Object} filters ListOptionDto
-   * @param {SelectQueryBuilder<FacultiesEntity>} query
+   * @param {SelectQueryBuilder<FacultiesEntity>}  query
    *
    * @returns {Promise<IResultFilters>}
    */
@@ -183,10 +181,10 @@ export class FacultiesService {
       const faculty = await this.findFacultyById(id);
       const deletedAt = Math.floor(Date.now() / 1000);
 
-      this.FacultiesRepository.merge(this.FacultiesModel, faculty, {
+      this.FacultiesRepository.merge(faculty, faculty, {
         deleted_at: deletedAt,
       });
-      return await this.FacultiesRepository.save(this.FacultiesModel, {
+      return await this.FacultiesRepository.save(faculty, {
         data: { action: 'DELETE' },
       });
     } catch (error) {
@@ -207,8 +205,11 @@ export class FacultiesService {
     try {
       const faculty = await this.findFacultyById(id);
 
-      this.FacultiesRepository.merge(this.FacultiesModel, faculty);
-      return await this.FacultiesRepository.save(this.FacultiesModel, {
+      this.FacultiesRepository.merge(faculty, {
+        deleted_at: null,
+      });
+
+      return await this.FacultiesRepository.save(faculty, {
         data: { action: 'RESTORE' },
       });
     } catch (error) {

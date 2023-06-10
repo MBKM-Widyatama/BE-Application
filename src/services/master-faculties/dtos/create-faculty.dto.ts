@@ -1,4 +1,5 @@
 import { IsString, IsUUID, IsOptional } from 'class-validator';
+import { IsExists } from 'src/libraries/common';
 
 export class CreateFacultyDto {
   @IsString()
@@ -7,5 +8,6 @@ export class CreateFacultyDto {
   leader_id: string;
 
   @IsString()
+  @IsExists('faculties', 'name')
   name: string;
 }
