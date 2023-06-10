@@ -27,7 +27,7 @@ export class UsersService {
       id: user.id,
       email: user.email,
       name: user.name,
-      role: user.role,
+      role: user.role.name,
     };
 
     return this.jwtService.sign(payload);

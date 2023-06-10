@@ -4,12 +4,18 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {
+  DataSource as Source,
+  EntityManager,
+  SelectQueryBuilder,
+  Repository,
+} from 'typeorm';
 import { FacultiesEntity } from '../entities/faculties.entity';
 import { ICreateFaculty } from '../interfaces/faculties.interface';
 import { ListOptionDto, PageMetaDto, PaginateDto } from 'src/libraries/common';
 import { getSortColumns } from 'src/libraries/common/helpers';
 import { UpdateFacultyDto } from 'src/services/master-faculties/dtos/update-faculty.dto';
+import { IResultFilters } from 'src/libraries/common/interfaces';
 
 @Injectable()
 export class FacultiesService {
@@ -18,57 +24,35 @@ export class FacultiesService {
   constructor(
     @InjectRepository(FacultiesEntity)
     private readonly FacultiesRepository: Repository<FacultiesEntity>,
+    private readonly DataSource: Source,
   ) {}
 
   /**
-   * @description Handle find faculty by id
-   * @param {string} id
+   * @description Handle filters data
+   * @param {Object} filters ListOptionDto
+   * @param {SelectQueryBuilder<FacultiesEntity>} query
    *
-   * @returns {Promise<FacultiesEntity>}
+   * @returns {Promise<IResultFilters>}
    */
-  async findFacultyById(id: string): Promise<FacultiesEntity> {
-    try {
-      return await this.FacultiesRepository.findOneBy({
-        id,
-      });
-    } catch (err) {
-      throw new NotFoundException('Not Found', {
-        cause: new Error(),
-        description: err.response ? err?.response?.error : err.message,
-      });
-    }
-  }
-
-  /**
-   * @description Handle find all faculties
-   * @param {filters} ListOptionDto
-   * @returns {Promise<FacultiesEntity[]>}
-   */
-  async findAllFaculties(
+  private async filtersData(
     filters: ListOptionDto,
-  ): Promise<PaginateDto<FacultiesEntity>> {
+    query: SelectQueryBuilder<FacultiesEntity>,
+  ): Promise<IResultFilters> {
     try {
-      const query = this.FacultiesRepository.createQueryBuilder(
-        'faculties',
-      ).select([
-        'faculties.id',
-        'faculties.name',
-        'faculties.leader_id',
-        'faculties.created_at',
-        'faculties.updated_at',
-        'faculties.deleted_at',
-      ]);
+      // Has relationships
+      query.leftJoinAndSelect('faculties.leader', 'leader');
+      // query.leftJoinAndSelect('faculties.lecturer', 'lecturer');
 
       if (filters.search) {
-        query.andWhere('faculties.name LIKE :search', {
+        query.andWhere('faculties.name ILIKE :search', {
           search: `%${filters.search}%`,
         });
       }
 
       if (filters.isDeleted) {
-        query.andWhere('deleted_at IS NOT NULL');
+        query.andWhere('faculties.deleted_at IS NOT NULL');
       } else {
-        query.andWhere('deleted_at IS NULL');
+        query.andWhere('faculties.deleted_at IS NULL');
       }
 
       if (filters.sort) {
@@ -83,6 +67,32 @@ export class FacultiesService {
 
       const [data, totalData] = await query.cache(true).getManyAndCount();
       const total = data.length;
+
+      return {
+        data,
+        total,
+        totalData,
+      };
+    } catch (error) {
+      throw new BadRequestException('Bad Request', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
+  }
+
+  /**
+   * @description Handle find all faculties
+   * @param {filters} ListOptionDto
+   * @returns {Promise<FacultiesEntity[]>}
+   */
+  async findAllFaculties(
+    filters: ListOptionDto,
+  ): Promise<PaginateDto<FacultiesEntity>> {
+    try {
+      const query: SelectQueryBuilder<FacultiesEntity> =
+        this.FacultiesRepository.createQueryBuilder('faculties');
+      const { data, total, totalData } = await this.filtersData(filters, query);
       const meta = new PageMetaDto({
         totalData,
         total,
@@ -90,11 +100,33 @@ export class FacultiesService {
         size: filters.disablePaginate ? totalData : filters.limit,
       });
 
-      return new PaginateDto(data, meta);
+      return new PaginateDto<FacultiesEntity>(data, meta);
     } catch (error) {
       throw new BadRequestException('Bad Request', {
         cause: new Error(),
         description: error.response ? error?.response?.error : error.message,
+      });
+    }
+  }
+
+  /**
+   * @description Handle find faculty by id
+   * @param {string} id
+   *
+   * @returns {Promise<FacultiesEntity>}
+   */
+  async findFacultyById(id: string): Promise<FacultiesEntity> {
+    try {
+      return await this.FacultiesRepository.findOne({
+        where: {
+          id,
+        },
+        relations: ['leader'],
+      });
+    } catch (err) {
+      throw new NotFoundException('Not Found', {
+        cause: new Error(),
+        description: err.response ? err?.response?.error : err.message,
       });
     }
   }
@@ -119,10 +151,19 @@ export class FacultiesService {
    * @returns {Promise<FacultiesEntity>}
    */
   async updateFaculty(id: string, payload: UpdateFacultyDto): Promise<any> {
-    try {
-      this.findFacultyById(id);
+    const faculty = await this.FacultiesRepository.findOneOrFail({
+      where: {
+        id,
+      },
+    });
 
-      await this.FacultiesRepository.update(id, payload);
+    try {
+      await this.DataSource.transaction(async (manager: EntityManager) => {
+        this.FacultiesRepository.merge(faculty, payload);
+        await manager.save(faculty, { data: { action: 'UPDATE' } });
+      });
+
+      return await this.findFacultyById(id);
     } catch (error) {
       throw new BadRequestException('Bad Request', {
         cause: new Error(),

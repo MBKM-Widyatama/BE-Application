@@ -1,5 +1,5 @@
 import { AppEntity } from '../../../libraries/common/entities';
-import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, ManyToOne, JoinColumn } from 'typeorm';
 import { FacultiesEntity } from 'src/models/faculties/entities/faculties.entity';
 import { MaritalStatusEnumeraton, SexEnumeration } from 'src/libraries/common';
 import { Exclude } from 'class-transformer';
@@ -42,7 +42,7 @@ export class LecturerEntity extends AppEntity {
   /**
    * Relations
    */
-  @OneToOne(() => FacultiesEntity, (faculty) => faculty.id)
+  @ManyToOne(() => FacultiesEntity, (faculty) => faculty.id)
   @JoinColumn({ name: 'faculty_id' })
   public faculty: FacultiesEntity;
 }
