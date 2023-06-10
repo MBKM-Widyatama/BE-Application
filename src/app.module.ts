@@ -15,6 +15,8 @@ import { CoursesModule } from './models/courses/courses.module';
 import { MasterCoursesModule } from './services/master-courses/master-courses.module';
 import { CategorialNewsModule } from './models/categorial-news/categorial-news.module';
 import { MasterCategorialNewsModule } from './services/master-categorial-news/master-categorial-news.module';
+import { NewsModule } from './models/news/news.module';
+import { MasterNewsModule } from './services/master-news/master-news.module';
 
 @Module({
   imports: [
@@ -42,6 +44,8 @@ import { MasterCategorialNewsModule } from './services/master-categorial-news/ma
     MasterCoursesModule,
     CategorialNewsModule,
     MasterCategorialNewsModule,
+    NewsModule,
+    MasterNewsModule,
   ],
   providers: [
     IsExistsConstraint,
