@@ -44,7 +44,6 @@ export abstract class AppEntity {
     type: 'bigint',
     nullable: true,
   })
-  @Exclude()
   public updated_at: number;
 
   @Column({
@@ -68,7 +67,6 @@ export abstract class AppEntity {
     type: 'bigint',
     nullable: true,
   })
-  @Exclude()
   public deleted_at: number;
 
   @Column({

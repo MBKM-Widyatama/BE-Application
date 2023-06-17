@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
@@ -111,6 +112,24 @@ export class MasterNewsController {
 
     return {
       message: 'News has been updated successfully',
+      result,
+    };
+  }
+
+  @Delete(':id')
+  @HttpCode(200)
+  @Throttle(60, 60)
+  async delete(
+    @RequestUser() requestUser: IRequestUser,
+    @Param() requestParams: DetailOptionDto,
+  ): Promise<any> {
+    const result = await this.NewsService.deleteNews(
+      requestParams.id,
+      requestUser,
+    );
+
+    return {
+      message: 'News has been deleted successfully',
       result,
     };
   }

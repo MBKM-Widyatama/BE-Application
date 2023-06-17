@@ -263,4 +263,35 @@ export class NewsService {
       });
     }
   }
+
+  /**
+   * @description Handle delete news
+   * @param {string} id
+   * @param {Object} user @type IRequestUser
+   *
+   * @returns {Promise<NewsEntity>}
+   */
+  async deleteNews(id: string, user: IRequestUser): Promise<NewsEntity> {
+    try {
+      const news = await this.findNewsById(id);
+      const deletedAt = Math.floor(Date.now() / 1000);
+      this.NewsRepository.merge(news, {
+        deleted_at: deletedAt,
+      });
+
+      await this.NewsRepository.save(news, {
+        data: {
+          action: 'DELETE',
+          user,
+        },
+      });
+
+      return await this.findNewsById(id);
+    } catch (error) {
+      throw new BadRequestException('Bad Request', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
+  }
 }
