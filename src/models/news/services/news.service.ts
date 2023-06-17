@@ -294,4 +294,34 @@ export class NewsService {
       });
     }
   }
+
+  /**
+   * @description Handle restore data news
+   * @param {string} id
+   * @param {Object} user @type IRequestUser
+   *
+   * @returns {Promise<NewsEntity>}
+   */
+  async restoreNews(id: string, user: IRequestUser): Promise<NewsEntity> {
+    try {
+      const news = await this.findNewsById(id);
+      this.NewsRepository.merge(news, {
+        deleted_at: null,
+      });
+
+      await this.NewsRepository.save(news, {
+        data: {
+          action: 'RESTORE',
+          user,
+        },
+      });
+
+      return await this.findNewsById(id);
+    } catch (error) {
+      throw new BadRequestException('Bad Request', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
+  }
 }

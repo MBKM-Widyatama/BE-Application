@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -130,6 +131,24 @@ export class MasterNewsController {
 
     return {
       message: 'News has been deleted successfully',
+      result,
+    };
+  }
+
+  @Patch(':id/restore')
+  @HttpCode(200)
+  @Throttle(60, 60)
+  async restore(
+    @RequestUser() requestUser: IRequestUser,
+    @Param() requestParams: DetailOptionDto,
+  ): Promise<any> {
+    const result = await this.NewsService.restoreNews(
+      requestParams.id,
+      requestUser,
+    );
+
+    return {
+      message: 'News has been restored successfully',
       result,
     };
   }
