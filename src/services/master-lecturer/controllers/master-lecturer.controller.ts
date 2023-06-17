@@ -31,7 +31,7 @@ export class MasterLecturerController {
 
   @Get()
   @HttpCode(200)
-  @Throttle(3, 60)
+  @Throttle(60, 60)
   @Roles(Role.Courses, Role.Faculty, Role.Lecturer, Role.SuperAdmin)
   async findAll(@Query() requestQuery: ListOptionDto): Promise<any> {
     const result = await this.LecturerService.findAllLecturers(requestQuery);
@@ -44,7 +44,7 @@ export class MasterLecturerController {
 
   @Get(':id')
   @HttpCode(200)
-  @Throttle(3, 60)
+  @Throttle(60, 60)
   @Roles(Role.Courses, Role.Faculty, Role.Lecturer, Role.SuperAdmin)
   async findOne(@Param() requestParams: DetailOptionDto): Promise<any> {
     const result = await this.LecturerService.findLecturerById(
@@ -59,7 +59,7 @@ export class MasterLecturerController {
 
   @Post()
   @HttpCode(201)
-  @Throttle(3, 60)
+  @Throttle(60, 60)
   @Roles(Role.SuperAdmin)
   async create(@Body() requestBody: CreateLecturerDto): Promise<any> {
     const result = await this.LecturerService.createLecturer(requestBody);
@@ -72,7 +72,7 @@ export class MasterLecturerController {
 
   @Put(':id')
   @HttpCode(200)
-  @Throttle(3, 60)
+  @Throttle(60, 60)
   @Roles(Role.SuperAdmin)
   async update(
     @Param() requestParams: DetailOptionDto,
@@ -91,7 +91,7 @@ export class MasterLecturerController {
 
   @Delete(':id')
   @HttpCode(200)
-  @Throttle(3, 60)
+  @Throttle(60, 60)
   @Roles(Role.SuperAdmin)
   async delete(@Param() requestParams: DetailOptionDto): Promise<any> {
     const result = await this.LecturerService.deleteLecturer(requestParams.id);
@@ -104,7 +104,7 @@ export class MasterLecturerController {
 
   @Patch(':id/restore')
   @HttpCode(200)
-  @Throttle(3, 60)
+  @Throttle(60, 60)
   @Roles(Role.SuperAdmin)
   async restore(@Param() requestParams: DetailOptionDto): Promise<any> {
     const result = await this.LecturerService.restoreLecturer(requestParams.id);

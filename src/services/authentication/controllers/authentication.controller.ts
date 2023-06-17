@@ -28,14 +28,9 @@ export class AuthenticationController {
     private readonly RolesService: RolesService,
   ) {}
 
-  @Get('users')
-  async findAllUsers() {
-    return this.UsersService.findAllUsers();
-  }
-
   @Post('sign-in')
   @HttpCode(200)
-  @Throttle(3, 60)
+  @Throttle(60, 60)
   @UseGuards(AuthPublicLocalGuard)
   async signInByEmail(@Request() request) {
     const result = await this.UsersService.signInByEmail(request.user);
@@ -48,7 +43,7 @@ export class AuthenticationController {
 
   @Post('sign-up')
   @HttpCode(201)
-  @Throttle(3, 60)
+  @Throttle(60, 60)
   async signUp(@Body() requestBody: CreateUserDto) {
     const defaultRole = await this.RolesService.findRoleByName('Super Admin');
 
@@ -60,6 +55,18 @@ export class AuthenticationController {
 
     return {
       message: 'User created successfully',
+      result,
+    };
+  }
+
+  @Post('forgot-password')
+  @HttpCode(200)
+  @Throttle(60, 60)
+  async forgotPassword(@Body() requestBody) {
+    const result = await this.UsersService.forgotPassword(requestBody.email);
+
+    return {
+      message: 'Forgot password successfully',
       result,
     };
   }

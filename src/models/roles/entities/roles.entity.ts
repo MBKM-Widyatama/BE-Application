@@ -1,5 +1,5 @@
 import { AppEntity } from '../../../libraries/common/entities/app-entity.abstract';
-import { Entity, Column, OneToOne } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import { UserEntity } from '../../users/entities/user.entity';
 
 @Entity({ name: 'roles' })
@@ -10,6 +10,6 @@ export class RoleEntity extends AppEntity {
   @Column()
   is_active: boolean;
 
-  @OneToOne(() => UserEntity, (user) => user.role_id)
-  user: UserEntity;
+  @OneToMany(() => UserEntity, (user) => user.role)
+  users: UserEntity[];
 }

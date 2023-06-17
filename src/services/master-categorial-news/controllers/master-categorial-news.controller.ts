@@ -31,7 +31,7 @@ export class MasterCategorialNewsController {
 
   @Get()
   @HttpCode(200)
-  @Throttle(5, 10)
+  @Throttle(60, 60)
   public async findAll(@Query() requestQuery: ListOptionDto): Promise<any> {
     const result = await this.CategorialNewsService.findAllCategorialNews(
       requestQuery,
@@ -45,7 +45,7 @@ export class MasterCategorialNewsController {
 
   @Get(':id')
   @HttpCode(200)
-  @Throttle(5, 10)
+  @Throttle(60, 60)
   public async findOne(@Param() requestParams: DetailOptionDto): Promise<any> {
     const result = await this.CategorialNewsService.findCategorialNewsById(
       requestParams.id,
@@ -59,7 +59,7 @@ export class MasterCategorialNewsController {
 
   @Post()
   @HttpCode(201)
-  @Throttle(5, 10)
+  @Throttle(60, 60)
   public async create(
     @Body() requestBody: CreateCategorialNewsDto,
   ): Promise<any> {
@@ -75,7 +75,7 @@ export class MasterCategorialNewsController {
 
   @Put(':id')
   @HttpCode(200)
-  @Throttle(5, 10)
+  @Throttle(60, 60)
   public async update(
     @Param() requestParams: DetailOptionDto,
     @Body() requestBody: UpdateCategorialNewsDto,
@@ -93,7 +93,7 @@ export class MasterCategorialNewsController {
 
   @Delete(':id')
   @HttpCode(200)
-  @Throttle(5, 10)
+  @Throttle(60, 60)
   public async delete(@Param() requestParams: DetailOptionDto): Promise<any> {
     const result = await this.CategorialNewsService.deleteCategorialNews(
       requestParams.id,
@@ -107,7 +107,7 @@ export class MasterCategorialNewsController {
 
   @Patch(':id/restore')
   @HttpCode(200)
-  @Throttle(5, 10)
+  @Throttle(60, 60)
   public async restore(@Param() requestParams: DetailOptionDto): Promise<any> {
     const result = await this.CategorialNewsService.restoreCategorialNews(
       requestParams.id,

@@ -52,6 +52,9 @@ export class IsExistsConstraint implements ValidatorConstraintInterface {
     // resturn as invalid if exceptField is not set after record exists
     if (!exceptField) return false;
 
+    console.log('record', record[0]);
+    console.log(args, 'args');
+
     let exceptFieldValue;
     if (args.object['context']) {
       exceptFieldValue = args.object['context'].params[exceptField];

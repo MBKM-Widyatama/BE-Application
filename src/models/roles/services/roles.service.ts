@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RoleEntity } from '../entities/roles.entity';
@@ -35,9 +35,16 @@ export class RolesService {
    *
    * @returns {Promise<RoleEntity>}
    */
-  createRole(payload: CreateRoleDto): Promise<RoleEntity> {
-    const role = this.RolesRepository.create(payload);
+  async createRole(payload: CreateRoleDto): Promise<RoleEntity> {
+    try {
+      const role = this.RolesRepository.create(payload);
 
-    return this.RolesRepository.save(role);
+      return await this.RolesRepository.save(role);
+    } catch (error) {
+      throw new BadRequestException('Bad Request', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
   }
 }

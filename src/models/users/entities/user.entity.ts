@@ -1,5 +1,5 @@
 import { AppEntity } from '../../../libraries/common/entities';
-import { Entity, Column, BeforeInsert, OneToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, BeforeInsert, JoinColumn, ManyToOne } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as dotenv from 'dotenv';
 import * as bcrypt from 'bcrypt';
@@ -10,40 +10,79 @@ dotenv.config();
 
 @Entity({ name: 'users' })
 export class UserEntity extends AppEntity {
-  @Column({ nullable: true })
+  @Column({
+    name: 'role_id',
+    type: 'uuid',
+    nullable: false,
+  })
   @Exclude()
   public role_id: string;
 
-  @Column()
+  @Column({
+    name: 'faculty_id',
+    type: 'uuid',
+    nullable: true,
+  })
+  @Exclude()
   public faculty_id: string;
 
-  @Column()
+  @Column({
+    name: 'name',
+    type: 'varchar',
+    nullable: false,
+  })
   public name: string;
 
-  @Column({ unique: true })
+  @Column({
+    name: 'email',
+    type: 'varchar',
+    nullable: false,
+    unique: true,
+  })
   public email: string;
 
-  @Column({ nullable: true })
-  @Exclude()
-  public email_verification_otp: string;
+  @Column({
+    name: 'reset_password_token',
+    type: 'varchar',
+    nullable: true,
+  })
+  public reset_password_token: string;
 
-  @Column({ type: 'bigint', nullable: true })
-  @Exclude()
-  public email_verification_valid_to: number;
+  @Column({
+    name: 'reset_password_token_valid_to',
+    type: 'bigint',
+    nullable: true,
+  })
+  public reset_password_token_valid_to: number;
 
-  @Column({ type: 'bigint', nullable: true })
-  public email_verified_at: number;
-
-  @Column({ length: 5, nullable: true })
+  @Column({
+    name: 'phone_code',
+    type: 'varchar',
+    length: 5,
+    nullable: true,
+  })
   public phone_code: string;
 
-  @Column({ length: 15, nullable: true, unique: true })
+  @Column({
+    name: 'phone_number',
+    type: 'varchar',
+    nullable: true,
+    unique: true,
+  })
   public phone_number: string;
 
-  @Column({ nullable: true })
+  @Column({
+    name: 'profile_picture',
+    type: 'varchar',
+    nullable: true,
+  })
   public profile_picture: string;
 
-  @Column()
+  @Column({
+    name: 'password',
+    type: 'varchar',
+    nullable: false,
+  })
   @Exclude()
   public password: string;
 
@@ -64,11 +103,11 @@ export class UserEntity extends AppEntity {
   /**
    * Relations
    */
-  @OneToOne(() => RoleEntity, (role) => role.user)
+  @ManyToOne(() => RoleEntity, (role) => role.users)
   @JoinColumn({ name: 'role_id' })
   public role: RoleEntity;
 
-  @OneToOne(() => FacultiesEntity, (faculty) => faculty.id)
+  @ManyToOne(() => FacultiesEntity, (faculty) => faculty.users)
   @JoinColumn({ name: 'faculty_id' })
   public faculty: FacultiesEntity;
 }

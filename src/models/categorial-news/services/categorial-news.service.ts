@@ -144,7 +144,7 @@ export class CategorialNewsService {
 
       return await this.findCategorialNewsById(categorialNews.id);
     } catch (error) {
-      throw new NotFoundException('Not Found', {
+      throw new BadRequestException('Bad Request', {
         cause: new Error(),
         description: error.response ? error?.response?.error : error.message,
       });
@@ -173,7 +173,7 @@ export class CategorialNewsService {
 
       return await this.findCategorialNewsById(categorialNews.id);
     } catch (error) {
-      throw new NotFoundException('Not Found', {
+      throw new BadRequestException('Bad Request', {
         cause: new Error(),
         description: error.response ? error?.response?.error : error.message,
       });
@@ -198,7 +198,7 @@ export class CategorialNewsService {
 
       return await this.findCategorialNewsById(categorialNews.id);
     } catch (error) {
-      throw new NotFoundException('Not Found', {
+      throw new BadRequestException('Bad Request', {
         cause: new Error(),
         description: error.response ? error?.response?.error : error.message,
       });
@@ -222,7 +222,7 @@ export class CategorialNewsService {
 
       return await this.findCategorialNewsById(categorialNews.id);
     } catch (error) {
-      throw new NotFoundException('Not Found', {
+      throw new BadRequestException('Bad Request', {
         cause: new Error(),
         description: error.response ? error?.response?.error : error.message,
       });

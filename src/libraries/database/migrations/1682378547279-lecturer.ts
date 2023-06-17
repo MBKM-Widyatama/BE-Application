@@ -1,18 +1,8 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-enum Sex {
-  MALE = 'MALE',
-  FEMALE = 'FEMALE',
-}
-
-enum MaritalStatus {
-  MARRIED = 'MARRIED',
-  UNMARRIED = 'UNMARRIED',
-}
-
 export class lecturer1682378547279 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    queryRunner.createTable(
+    await queryRunner.createTable(
       new Table({
         name: 'lecturer',
         columns: [
@@ -47,18 +37,13 @@ export class lecturer1682378547279 implements MigrationInterface {
           },
           {
             name: 'sex',
-            type: 'enum',
-            enum: [Sex.MALE, Sex.FEMALE],
-            enumName: 'sexEnumeration',
+            type: 'varchar',
             isNullable: false,
           },
           {
             name: 'marital_status',
-            type: 'enum',
-            enum: [MaritalStatus.MARRIED, MaritalStatus.UNMARRIED],
-            enumName: 'maritalStatusEnumeration',
+            type: 'varchar',
             isNullable: false,
-            default: `'${MaritalStatus.UNMARRIED}'`,
           },
           {
             name: 'created_at',

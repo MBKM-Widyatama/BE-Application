@@ -11,11 +11,13 @@ import {
   Delete,
   Patch,
 } from '@nestjs/common';
-import { FacultiesService } from 'src/models/faculties/services/faculties.service';
+import { FacultiesService as Service } from 'src/models/faculties/services/faculties.service';
 import { Throttle } from '@nestjs/throttler';
 import {
   AuthenticationJWTGuard,
   ListOptionDto,
+  IRequestUser,
+  RequestUser,
   Role,
   Roles,
   RolesGuard,
@@ -28,14 +30,20 @@ import { DetailOptionDto } from 'src/libraries/common/dto/detail-option.dto';
 @UseGuards(AuthenticationJWTGuard, RolesGuard)
 @Roles(Role.SuperAdmin)
 export class MasterFacultiesController {
-  constructor(private readonly FacultiesService: FacultiesService) {}
+  constructor(private readonly FacultiesService: Service) {}
 
   @Post()
   @HttpCode(201)
-  @Throttle(3, 60)
+  @Throttle(60, 60)
   @Roles(Role.SuperAdmin)
-  async create(@Body() requestBody: CreateFacultyDto): Promise<any> {
-    const result = await this.FacultiesService.createFaculty(requestBody);
+  async create(
+    @Body() requestBody: CreateFacultyDto,
+    @RequestUser() requestUser: IRequestUser,
+  ): Promise<any> {
+    const result = await this.FacultiesService.createFaculty(
+      requestBody,
+      requestUser,
+    );
 
     return {
       message: 'Faculty has been created successfully',
@@ -45,7 +53,7 @@ export class MasterFacultiesController {
 
   @Get()
   @HttpCode(200)
-  @Throttle(3, 60)
+  @Throttle(60, 60)
   @Roles(Role.SuperAdmin, Role.Courses, Role.Faculty, Role.Lecturer)
   async findAll(@Query() requestQuery: ListOptionDto): Promise<any> {
     const result = await this.FacultiesService.findAllFaculties(requestQuery);
@@ -58,7 +66,7 @@ export class MasterFacultiesController {
 
   @Put(':id')
   @HttpCode(200)
-  @Throttle(3, 60)
+  @Throttle(60, 60)
   @Roles(Role.SuperAdmin)
   async update(
     @Param() requestParams: DetailOptionDto,
@@ -77,7 +85,7 @@ export class MasterFacultiesController {
 
   @Delete(':id')
   @HttpCode(200)
-  @Throttle(3, 60)
+  @Throttle(60, 60)
   @Roles(Role.SuperAdmin)
   async delete(@Param() requestParams: DetailOptionDto): Promise<any> {
     const result = await this.FacultiesService.deleteFaculty(requestParams.id);
@@ -90,7 +98,7 @@ export class MasterFacultiesController {
 
   @Patch(':id')
   @HttpCode(200)
-  @Throttle(3, 60)
+  @Throttle(60, 60)
   @Roles(Role.SuperAdmin)
   async restore(@Param() requestParams: DetailOptionDto): Promise<any> {
     const result = await this.FacultiesService.restoreFaculty(requestParams.id);
