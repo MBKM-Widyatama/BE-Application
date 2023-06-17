@@ -5,6 +5,7 @@ import {
   HttpCode,
   Param,
   Post,
+  Put,
   Query,
   UploadedFiles,
   UseGuards,
@@ -25,8 +26,7 @@ import {
 import { NewsService as Service } from 'src/models/news/services/news.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreateNewsDto } from '../dtos/create-news.dto';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { UpdateNewsDto } from '../dtos/update-news.dto';
 
 @Controller('master-news')
 @UseGuards(AuthenticationJWTGuard, RolesGuard)
@@ -82,6 +82,35 @@ export class MasterNewsController {
 
     return {
       message: 'News has been created successfully',
+      result,
+    };
+  }
+
+  @Put(':id')
+  @HttpCode(200)
+  @UseInterceptors(
+    FilesInterceptor('thumbnail', 1, {
+      fileFilter: (req, file, cb) => {
+        validateFileImage(req, file, cb);
+      },
+    }),
+  )
+  @Throttle(60, 60)
+  async update(
+    @RequestUser() requestUser: IRequestUser,
+    @Param() requestParams: DetailOptionDto,
+    @Body() requestBody: UpdateNewsDto,
+    @UploadedFiles() file: Express.Multer.File,
+  ): Promise<any> {
+    const result = await this.NewsService.updateNews(
+      requestParams.id,
+      file,
+      requestBody,
+      requestUser,
+    );
+
+    return {
+      message: 'News has been updated successfully',
       result,
     };
   }

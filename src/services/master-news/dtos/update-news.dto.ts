@@ -10,7 +10,7 @@ import { IsExists } from 'src/libraries/common';
 
 export class UpdateNewsDto {
   @Allow()
-  public context?: {
+  context?: {
     params: any;
     query: any;
     user: any;
@@ -24,7 +24,7 @@ export class UpdateNewsDto {
 
   @IsString()
   @IsNotEmpty()
-  @IsExists('news', 'title')
+  @IsExists('news', 'title', 'id')
   public title: string;
 
   @IsString()

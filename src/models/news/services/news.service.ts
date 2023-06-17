@@ -17,6 +17,7 @@ import { ListOptionDto, PageMetaDto, PaginateDto } from 'src/libraries/common';
 import { generateFileName, getSortColumns } from 'src/libraries/common/helpers';
 import { IRequestUser, IResultFilters } from 'src/libraries/common/interfaces';
 import { CreateNewsDto } from 'src/services/master-news/dtos/create-news.dto';
+import { UpdateNewsDto } from 'src/services/master-news/dtos/update-news.dto';
 
 @Injectable()
 export class NewsService {
@@ -183,6 +184,78 @@ export class NewsService {
       });
 
       return await this.findNewsById(result.id);
+    } catch (error) {
+      throw new BadRequestException('Bad Request', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
+  }
+
+  /**
+   * @description Handle update news
+   * @param {string} id
+   * @param {Object} payload @type UpdateNewsDto
+   * @param {Object} user @type IRequestUser
+   *
+   * @returns {Promise<NewsEntity>}
+   */
+  async updateNews(
+    id: string,
+    file: Express.Multer.File,
+    payload: UpdateNewsDto,
+    user: IRequestUser,
+  ): Promise<NewsEntity> {
+    let thumbnail;
+
+    try {
+      await this.DataSource.transaction(async (manager: EntityManager) => {
+        // Make sure that the news is exist
+        const news = await this.NewsRepository.findOneOrFail({
+          where: {
+            id,
+          },
+        });
+
+        if (file) {
+          // If news has thumbnail, then delete it
+          if (news.thumbnail) {
+            const filePath = path.join(
+              `${this.uploadDirectory}/${news.thumbnail}`,
+            );
+            fs.unlinkSync(filePath);
+          }
+
+          // Create directory if not exist
+          if (!fs.existsSync(`${this.uploadDirectory}/${this.prefix}`)) {
+            fs.mkdirSync(`${this.uploadDirectory}/${this.prefix}`, {
+              recursive: true,
+            });
+          }
+
+          const filename = generateFileName(file[0]);
+          const filePath = path.join(
+            `${this.uploadDirectory}/${this.prefix}`,
+            filename,
+          );
+          fs.writeFileSync(filePath, file[0].buffer);
+          thumbnail = `${this.prefix}/${filename}`;
+        }
+
+        // Merge Two Entity into single one and save it
+        this.NewsRepository.merge(news, {
+          ...payload,
+          thumbnail,
+        });
+        await manager.save(news, {
+          data: {
+            action: 'UPDATE',
+            user,
+          },
+        });
+      });
+
+      return await this.findNewsById(id);
     } catch (error) {
       throw new BadRequestException('Bad Request', {
         cause: new Error(),
