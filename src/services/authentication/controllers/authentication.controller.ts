@@ -21,6 +21,8 @@ import { Throttle } from '@nestjs/throttler';
 
 // Passport
 import { AuthPublicLocalGuard } from 'src/libraries/common';
+import { ForgotPasswordDto } from '../dto/forgot-password.dto';
+import { ResetPasswordDto } from '../dto/reset-password.dto';
 @Controller('authentication')
 export class AuthenticationController {
   constructor(
@@ -62,11 +64,26 @@ export class AuthenticationController {
   @Post('forgot-password')
   @HttpCode(200)
   @Throttle(60, 60)
-  async forgotPassword(@Body() requestBody) {
+  async forgotPassword(@Body() requestBody: ForgotPasswordDto) {
     const result = await this.UsersService.forgotPassword(requestBody.email);
 
     return {
       message: 'Forgot password successfully',
+      result,
+    };
+  }
+
+  @Post('reset-password')
+  @HttpCode(200)
+  @Throttle(60, 60)
+  async resetPassword(@Body() requestBody: ResetPasswordDto) {
+    const result = await this.UsersService.resetUserPassword(
+      requestBody.token,
+      requestBody.password,
+    );
+
+    return {
+      message: 'Reset password successfully',
       result,
     };
   }

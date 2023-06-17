@@ -284,7 +284,7 @@ export class UsersService {
    *
    * @returns {Promise<UserEntity>}
    */
-  async updateUserPasswordUsingResetPassword(
+  async resetUserPassword(
     token: string,
     password: string,
   ): Promise<UserEntity> {
