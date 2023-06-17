@@ -35,7 +35,7 @@ export class AuthenticationController {
 
   @Post('sign-in')
   @HttpCode(200)
-  @Throttle(3, 60)
+  @Throttle(60, 60)
   @UseGuards(AuthPublicLocalGuard)
   async signInByEmail(@Request() request) {
     const result = await this.UsersService.signInByEmail(request.user);
@@ -48,7 +48,7 @@ export class AuthenticationController {
 
   @Post('sign-up')
   @HttpCode(201)
-  @Throttle(3, 60)
+  @Throttle(60, 60)
   async signUp(@Body() requestBody: CreateUserDto) {
     const defaultRole = await this.RolesService.findRoleByName('Super Admin');
 

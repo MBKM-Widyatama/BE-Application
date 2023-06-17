@@ -6,11 +6,19 @@ import { Exclude } from 'class-transformer';
 
 @Entity({ name: 'faculties' })
 export class FacultiesEntity extends AppEntity {
-  @Column()
+  @Column({
+    name: 'leader_id',
+    type: 'uuid',
+    nullable: true,
+  })
   @Exclude()
   public leader_id: string;
 
-  @Column()
+  @Column({
+    name: 'name',
+    type: 'varchar',
+    nullable: false,
+  })
   public name: string;
 
   /**
@@ -22,4 +30,7 @@ export class FacultiesEntity extends AppEntity {
 
   @OneToMany(() => LecturerEntity, (lecturer) => lecturer.faculty_id)
   public lecturer: LecturerEntity[];
+
+  @OneToMany(() => UserEntity, (user) => user.faculty)
+  public users: UserEntity[];
 }

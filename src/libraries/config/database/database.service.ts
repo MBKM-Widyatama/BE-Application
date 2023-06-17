@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
 import { DatabaseConfig } from './database.config';
+import { CommonDBSubscriber } from 'src/libraries/common';
 
 @Injectable()
 export class DatabaseService implements TypeOrmOptionsFactory {
@@ -12,7 +13,8 @@ export class DatabaseService implements TypeOrmOptionsFactory {
       ...DatabaseConfig,
       type: 'postgres',
       autoLoadEntities: true,
-      // synchronize: this.configService.get('APP_MODE') === 'development',
+      subscribers: [CommonDBSubscriber],
+      synchronize: this.configService.get('APP_MODE') === 'development',
     };
 
     return { ...config };

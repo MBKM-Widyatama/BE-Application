@@ -1,6 +1,7 @@
 import { IsExistsConstraint } from './libraries/common';
 import { APP_GUARD } from '@nestjs/core';
 import { Module } from '@nestjs/common';
+import { StorageModule } from './libraries/config/storage/storage.module';
 import { AuthenticationModule } from 'src/services/authentication/authentication.module';
 import { MasterRolesModule } from 'src/services/master-roles/master-roles.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -34,6 +35,7 @@ import { MasterNewsModule } from './services/master-news/master-news.module';
         limit: config.get('APP_THROTTLER_MAX_REQUEST'),
       }),
     }),
+    StorageModule,
     AuthenticationModule,
     MasterRolesModule,
     FacultiesModule,

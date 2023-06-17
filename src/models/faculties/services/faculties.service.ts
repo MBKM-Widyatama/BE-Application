@@ -12,8 +12,13 @@ import {
 } from 'typeorm';
 import { FacultiesEntity } from '../entities/faculties.entity';
 import { ICreateFaculty } from '../interfaces/faculties.interface';
-import { ListOptionDto, PageMetaDto, PaginateDto } from 'src/libraries/common';
-import { getSortColumns } from 'src/libraries/common/helpers';
+import {
+  ListOptionDto,
+  PageMetaDto,
+  PaginateDto,
+  getSortColumns,
+  IRequestUser,
+} from 'src/libraries/common';
 import { UpdateFacultyDto } from 'src/services/master-faculties/dtos/update-faculty.dto';
 import { IResultFilters } from 'src/libraries/common/interfaces';
 
@@ -132,13 +137,29 @@ export class FacultiesService {
   /**
    * @description Handle create faculty
    * @param {Object} payload
+   * @param {Object} user @type IRequestUser
    *
    * @returns {Promise<FacultiesEntity>}
    */
-  createFaculty(payload: ICreateFaculty): Promise<FacultiesEntity> {
-    const role = this.FacultiesRepository.create(payload);
+  async createFaculty(
+    payload: ICreateFaculty,
+    user: IRequestUser,
+  ): Promise<FacultiesEntity> {
+    try {
+      const role = this.FacultiesRepository.create(payload);
 
-    return this.FacultiesRepository.save(role);
+      return this.FacultiesRepository.save(role, {
+        data: {
+          action: 'CREATE',
+          user,
+        },
+      });
+    } catch (error) {
+      throw new NotFoundException('Not Found', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
   }
 
   /**

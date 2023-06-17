@@ -36,9 +36,10 @@ export class LecturerEntity extends AppEntity {
   public sex: SexEnumeration;
 
   @Column({
+    type: 'varchar',
     enum: [MaritalStatusEnumeraton.MARRIED, MaritalStatusEnumeraton.UNMARRIED],
     enumName: 'maritalStatusEnumeration',
-    default: `'${MaritalStatusEnumeraton.UNMARRIED}'`,
+    default: '"UNMARRIED"',
   })
   public marital_status: MaritalStatusEnumeraton;
 

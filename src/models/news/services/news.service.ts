@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import {
   BadRequestException,
   Injectable,
@@ -12,11 +14,16 @@ import {
 } from 'typeorm';
 import { NewsEntity } from '../entities/news.entity';
 import { ListOptionDto, PageMetaDto, PaginateDto } from 'src/libraries/common';
-import { getSortColumns } from 'src/libraries/common/helpers';
-import { IResultFilters } from 'src/libraries/common/interfaces';
+import { generateFileName, getSortColumns } from 'src/libraries/common/helpers';
+import { IRequestUser, IResultFilters } from 'src/libraries/common/interfaces';
+import { CreateNewsDto } from 'src/services/master-news/dtos/create-news.dto';
 
 @Injectable()
 export class NewsService {
+  private readonly uploadDirectory =
+    __dirname + ' ../../../../../src/libraries/uploads';
+  private readonly prefix = 'news';
+
   constructor(
     @InjectRepository(NewsEntity)
     private readonly NewsRepository: Repository<NewsEntity>,
@@ -36,8 +43,7 @@ export class NewsService {
   ): Promise<IResultFilters> {
     try {
       // Has relationships
-      query.leftJoinAndSelect('news.user', 'user');
-      // query.leftJoinAndSelect('news.categories', 'categories');
+      query.leftJoinAndSelect('news.categories', 'categories');
 
       if (filters.search) {
         query.andWhere(
@@ -119,10 +125,66 @@ export class NewsService {
         where: {
           id,
         },
-        relations: ['user', 'categories'],
+        relations: ['categories'],
       });
     } catch (error) {
       throw new NotFoundException('Not Found', {
+        cause: new Error(),
+        description: error.response ? error?.response?.error : error.message,
+      });
+    }
+  }
+
+  /**
+   * @description Handle create news
+   * @param {Object} payload @type CreateNewsDto
+   * @param {Object} user @type IRequestUser
+   *
+   * @returns {Promise<NewsEntity>}
+   */
+  async createNews(
+    file: Express.Multer.File,
+    payload: CreateNewsDto,
+    user: IRequestUser,
+  ): Promise<NewsEntity> {
+    let result: NewsEntity;
+    let thumbnail;
+
+    if (file) {
+      // Create directory if not exist
+      if (!fs.existsSync(`${this.uploadDirectory}/${this.prefix}`)) {
+        fs.mkdirSync(`${this.uploadDirectory}/${this.prefix}`, {
+          recursive: true,
+        });
+      }
+
+      const filename = generateFileName(file[0]);
+      const filePath = path.join(
+        `${this.uploadDirectory}/${this.prefix}`,
+        filename,
+      );
+      fs.writeFileSync(filePath, file[0].buffer);
+      thumbnail = `${this.prefix}/${filename}`;
+    }
+
+    try {
+      await this.DataSource.transaction(async (manager: EntityManager) => {
+        // Create a new entity of currency and save it into database
+        result = this.NewsRepository.create({
+          ...payload,
+          thumbnail,
+        });
+        await manager.save(result, {
+          data: {
+            action: 'CREATE',
+            user,
+          },
+        });
+      });
+
+      return await this.findNewsById(result.id);
+    } catch (error) {
+      throw new BadRequestException('Bad Request', {
         cause: new Error(),
         description: error.response ? error?.response?.error : error.message,
       });
