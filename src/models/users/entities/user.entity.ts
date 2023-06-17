@@ -42,27 +42,18 @@ export class UserEntity extends AppEntity {
   public email: string;
 
   @Column({
-    name: 'email_verified_otp',
+    name: 'reset_password_token',
     type: 'varchar',
     nullable: true,
   })
-  @Exclude()
-  public email_verification_otp: string;
+  public reset_password_token: string;
 
   @Column({
-    name: 'email_verified_valid_to',
+    name: 'reset_password_token_valid_to',
     type: 'bigint',
     nullable: true,
   })
-  @Exclude()
-  public email_verification_valid_to: number;
-
-  @Column({
-    name: 'email_verified_at',
-    type: 'bigint',
-    nullable: true,
-  })
-  public email_verified_at: number;
+  public reset_password_token_valid_to: number;
 
   @Column({
     name: 'phone_code',

@@ -28,11 +28,6 @@ export class AuthenticationController {
     private readonly RolesService: RolesService,
   ) {}
 
-  @Get('users')
-  async findAllUsers() {
-    return this.UsersService.findAllUsers();
-  }
-
   @Post('sign-in')
   @HttpCode(200)
   @Throttle(60, 60)
@@ -60,6 +55,18 @@ export class AuthenticationController {
 
     return {
       message: 'User created successfully',
+      result,
+    };
+  }
+
+  @Post('forgot-password')
+  @HttpCode(200)
+  @Throttle(60, 60)
+  async forgotPassword(@Body() requestBody) {
+    const result = await this.UsersService.forgotPassword(requestBody.email);
+
+    return {
+      message: 'Forgot password successfully',
       result,
     };
   }
